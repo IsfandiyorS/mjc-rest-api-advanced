@@ -1,13 +1,14 @@
 package com.epam.esm.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+import org.aspectj.weaver.ast.Or;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
+
+import static lombok.AccessLevel.*;
 
 /**
  * Abstract class {@code GiftCertificate} represents gift certificate entity.
@@ -21,20 +22,24 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = PRIVATE)
 public class GiftCertificate extends BaseAbstractDomain {
 
-    private String name;
+    String name;
 
-    private String description;
+    String description;
 
-    private BigDecimal price;
+    BigDecimal price;
 
-    private Integer duration;
+    Integer duration;
+
+    @OneToMany(mappedBy = "giftCertificate")
+    List<Order> orders;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "gift_certificate_tag",
             joinColumns = @JoinColumn(name = "gift_certificate_id", referencedColumnName="id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
-    private List<Tag> tagList;
+    List<Tag> tagList;
 }

@@ -1,9 +1,9 @@
 package com.epam.esm.domain;
 
 import com.epam.esm.enums.State;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -12,6 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
+
+import static lombok.AccessLevel.*;
 
 /**
  * Abstract class {@code AbstractDomain} represents to identify objects.
@@ -23,6 +25,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = PROTECTED)
 public abstract class BaseAbstractDomain {
 
     @Id
@@ -30,6 +33,7 @@ public abstract class BaseAbstractDomain {
     protected Long id;
 
     @CreatedDate
+    @Column(nullable = false)
     protected LocalDateTime createDate = LocalDateTime.now();
 
     @LastModifiedDate

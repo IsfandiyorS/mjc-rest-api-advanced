@@ -2,9 +2,9 @@ package com.epam.esm.exceptions;
 
 import com.epam.esm.enums.ErrorCodes;
 import com.epam.esm.response.ExceptionResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -39,17 +43,17 @@ public class GlobalExceptionHandler {
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     @ExceptionHandler(ActionFallDaoException.class)
     public final ResponseEntity<ExceptionResponse> handleActionFallException(
-            final RuntimeException exception, final WebRequest status){
+            final RuntimeException exception, final WebRequest status) {
         return constructExceptionResponse(exception, status, INTERNAL_SERVER_ERROR);
     }
 
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, JsonProcessingException.class})
-    public final ResponseEntity<Object> handleBadRequestExceptions(
-            final MethodArgumentNotValidException exception, final   HttpStatus status) {
-        ExceptionResponse errorResponse = new ExceptionResponse(status.value(), exception.getMessage());
-        return new ResponseEntity<>(errorResponse, status);
-    }
+//    @ExceptionHandler({MethodArgumentNotValidException.class, JsonProcessingException.class})
+//    public final ResponseEntity<Object> handleBadRequestExceptions(
+//            final MethodArgumentNotValidException exception, final   HttpStatus status) {
+//        ExceptionResponse errorResponse = new ExceptionResponse(status.value(), exception.getMessage());
+//        return new ResponseEntity<>(errorResponse, status);
+//    }
 
     @ResponseStatus(NOT_FOUND)
     @ExceptionHandler(value = ObjectNotFoundException.class)
@@ -69,6 +73,18 @@ public class GlobalExceptionHandler {
     public final ResponseEntity<Object> methodNotAllowedExceptionException() {
         ExceptionResponse errorResponse = new ExceptionResponse(HttpStatus.METHOD_NOT_ALLOWED.value(), ErrorCodes.METHOD_NOT_ALLOWED.message);
         return new ResponseEntity<>(errorResponse, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
     }
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})

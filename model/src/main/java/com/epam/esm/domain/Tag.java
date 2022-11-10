@@ -1,11 +1,11 @@
 package com.epam.esm.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.persistence.Entity;
+
+import static lombok.AccessLevel.*;
 
 /**
  * Abstract class {@code Tag} represents tag entity.
@@ -15,14 +15,11 @@ import javax.persistence.Entity;
  */
 @Entity
 @Data
+@Builder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = PRIVATE)
 public class Tag extends BaseAbstractDomain {
-    private String name;
-
-    public Tag(Long id, String name){
-        super(id);
-        this.name = name;
-    }
+    String name;
 }

@@ -11,8 +11,6 @@ import com.epam.esm.exceptions.AlreadyExistException;
 import com.epam.esm.exceptions.ObjectNotFoundException;
 import com.epam.esm.exceptions.ValidationException;
 import com.epam.esm.service.GiftCertificateService;
-import com.epam.esm.validation.GiftCertificateValidator;
-import com.epam.esm.validation.TagValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -57,7 +55,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public Long create(GiftCertificate createEntity) {
-        GiftCertificateValidator.isCreateEntityValid(createEntity);
+//        GiftCertificateValidator.isCreateEntityValid(createEntity);
 
         Optional<GiftCertificate> certificateByName = giftCertificationDao.findByName(createEntity.getName());
 
@@ -98,9 +96,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         getById(updateEntity.getId());
 
         Map<String, String> updateFieldsMap = new HashMap<>();
-        if (!GiftCertificateValidator.isUpdateEntityValid(updateEntity, updateFieldsMap)) {
-            throw new ValidationException(format(ErrorCodes.OBJECT_SHOULD_BE.message, FIELD, WRITTEN));
-        }
+//        if (!GiftCertificateValidator.isUpdateEntityValid(updateEntity, updateFieldsMap)) {
+//            throw new ValidationException(format(ErrorCodes.OBJECT_SHOULD_BE.message, FIELD, WRITTEN));
+//        }
         // fixme
 //        giftCertificationDao.update(updateFieldsMap);
         if (updateEntity.getTagList() != null) {
@@ -144,7 +142,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public void attachTagsToGiftCertificate(Long giftCertificateId, List<Tag> tagList) {
         getById(giftCertificateId);
-        TagValidator.validateListOfTags(tagList);
+//        TagValidator.validateListOfTags(tagList);
         List<Tag> alreadyExistedTags = tagDao.getAttachedTagsWithGiftCertificateId(giftCertificateId);
         checkTagsForAvailabilityAndSave(tagList, alreadyExistedTags, giftCertificateId);
     }
@@ -155,7 +153,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (optionalGiftCertificateDto.isEmpty()) {
             throw new ObjectNotFoundException(ErrorCodes.OBJECT_NOT_FOUND_ID.message);
         }
-        TagValidator.validateListOfTags(tags);
+//        TagValidator.validateListOfTags(tags);
         Long deleteEntity;
         // fixme for object not found exception
         deleteEntity = giftCertificationDao.deleteTagsAssociation(id, tags);

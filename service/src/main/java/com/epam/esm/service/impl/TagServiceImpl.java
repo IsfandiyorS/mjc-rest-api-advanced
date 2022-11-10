@@ -7,7 +7,6 @@ import com.epam.esm.enums.ErrorCodes;
 import com.epam.esm.exceptions.AlreadyExistException;
 import com.epam.esm.exceptions.ObjectNotFoundException;
 import com.epam.esm.service.TagService;
-import com.epam.esm.validation.TagValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -50,7 +49,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public Long create(Tag createEntity) {
 
-        TagValidator.isCreateEntityValid(createEntity);
+//        TagValidator.isCreateEntityValid(createEntity);
 
         Optional<Tag> optionalTag = tagDao.findByName(createEntity.getName());
 
