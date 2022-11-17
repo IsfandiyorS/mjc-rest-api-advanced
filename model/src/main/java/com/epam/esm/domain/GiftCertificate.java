@@ -19,6 +19,7 @@ import static lombok.AccessLevel.*;
 
 @Entity
 @Data
+@Builder
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor

@@ -1,14 +1,19 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.criteria.GiftCertificateCriteria;
-import com.epam.esm.domain.GiftCertificate;
-import com.epam.esm.domain.Tag;
+import com.epam.esm.dto.certificate.GiftCertificateCreateDto;
+import com.epam.esm.dto.certificate.GiftCertificateDto;
+import com.epam.esm.dto.certificate.GiftCertificateUpdateDto;
+import com.epam.esm.hateoas.domain.GiftCertificateHateoasAdder;
 import com.epam.esm.response.DataResponse;
 import com.epam.esm.service.impl.GiftCertificateServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -26,10 +31,12 @@ import java.util.List;
 public class GiftCertificateController {
 
     private final GiftCertificateServiceImpl giftCertificateService;
+    private final GiftCertificateHateoasAdder giftCertificateHateoasAdder;
 
     @Autowired
-    public GiftCertificateController(GiftCertificateServiceImpl giftCertificateService) {
+    public GiftCertificateController(GiftCertificateServiceImpl giftCertificateService, GiftCertificateHateoasAdder giftCertificateHateoasAdder) {
         this.giftCertificateService = giftCertificateService;
+        this.giftCertificateHateoasAdder = giftCertificateHateoasAdder;
     }
 
     /**
@@ -39,8 +46,10 @@ public class GiftCertificateController {
      * @return ResponseEntity body with found gift certificate.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<DataResponse<GiftCertificate>> getById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(new DataResponse<>(giftCertificateService.getById(id)));
+    public ResponseEntity<DataResponse<GiftCertificateDto>> getById(@PathVariable("id") Long id) {
+        GiftCertificateDto giftCertificateDto = giftCertificateService.getById(id);
+        giftCertificateHateoasAdder.addLink(giftCertificateDto);
+        return ResponseEntity.ok(new DataResponse<>(giftCertificateDto));
     }
 
     /**
@@ -49,8 +58,12 @@ public class GiftCertificateController {
      * @return ResponseEntity body with list of found gift certificates
      */
     @GetMapping("/")
-    public ResponseEntity<DataResponse<List<GiftCertificate>>> getAll() {
-        return ResponseEntity.ok(new DataResponse<>(giftCertificateService.getAll()));
+    public ResponseEntity<DataResponse<List<GiftCertificateDto>>> getAll(
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "5", required = false) int pageSize) {
+        List<GiftCertificateDto> giftCertificateDtoList = giftCertificateService.getAll(PageRequest.of(pageNumber, pageSize));
+        giftCertificateHateoasAdder.addLink(giftCertificateDtoList);
+        return ResponseEntity.ok(new DataResponse<>(giftCertificateDtoList));
     }
 
 
@@ -61,7 +74,7 @@ public class GiftCertificateController {
      * @return ResponseEntity with Long value which returns ID of created gift
      */
     @PostMapping("/create")
-    public ResponseEntity<DataResponse<Long>> create(@RequestBody GiftCertificate entity) {
+    public ResponseEntity<DataResponse<Long>> create(@Valid @RequestBody GiftCertificateCreateDto entity) {
         return ResponseEntity.ok(new DataResponse<>(giftCertificateService.create(entity)));
     }
 
@@ -72,7 +85,7 @@ public class GiftCertificateController {
      * @return ResponseEntity with Boolean which indicate the gift is created
      */
     @PostMapping("/update")
-    public ResponseEntity<DataResponse<String>> update(@RequestBody GiftCertificate updateEntity) {
+    public ResponseEntity<DataResponse<String>> update(@Valid @RequestBody GiftCertificateUpdateDto updateEntity) {
         giftCertificateService.update(updateEntity);
         return ResponseEntity.ok(new DataResponse<>("Successfully updated"));
     }
@@ -84,39 +97,9 @@ public class GiftCertificateController {
      * @return ResponseEntity with Boolean body
      */
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<DataResponse<Long>> deleteById(@PathVariable("id") Long id) {
+    public ResponseEntity<DataResponse<Integer>> deleteById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(new DataResponse<>(giftCertificateService.delete(id)));
     }
-
-    @GetMapping("/gift_tags_by_certificate_id/{id}")
-    public ResponseEntity<DataResponse<List<Tag>>> getAttachedTagsWithGiftCertificateId(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(new DataResponse<>(giftCertificateService.getAttachedTagsWithGiftCertificateId(id)));
-    }
-
-    /**
-     * Method for getting list of tags by gift certificate ID.
-     *
-     * @param id ID of gift certificate
-     * @return ResponseEntity with List of found tags body
-     */
-    @PostMapping("/attach_tags_by_certificate_id/{id}")
-    public ResponseEntity<DataResponse<String>> attachTagsToGiftCertificate(@RequestBody List<Tag> tags, @PathVariable("id") Long id) {
-        giftCertificateService.attachTagsToGiftCertificate(id, tags);
-        return ResponseEntity.ok(new DataResponse<>("Successfully attached"));
-    }
-
-    /**
-     * Method for removing tags from the gift certificate.
-     *
-     * @param tags tags to delete
-     * @param id   ID of gift certificate
-     * @return ResponseEntity with Boolean body
-     */
-    @DeleteMapping("/delete_tags_by_certificate_id/{id}")
-    public ResponseEntity<DataResponse<Long>> deleteAssociatedTags(@RequestBody List<Tag> tags, @PathVariable("id") Long id){
-        return ResponseEntity.ok(new DataResponse<>(giftCertificateService.deleteAssociatedTags(id, tags)));
-    }
-
 
     /**
      * Method for getting list of gift certificates from data source by special filter.
@@ -125,8 +108,12 @@ public class GiftCertificateController {
      * @return ResponseEntity with List of found gift certificates
      */
     @GetMapping("/filter")
-    public ResponseEntity<DataResponse<List<GiftCertificate>>> getGiftCertificateByFilterParams(@RequestBody GiftCertificateCriteria criteria) {
-        return ResponseEntity.ok(new DataResponse<>(giftCertificateService.doFilter(criteria)));
+    public ResponseEntity<DataResponse<List<GiftCertificateDto>>> getGiftCertificateByFilterParams(
+            @RequestBody GiftCertificateCriteria criteria,
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "5", required = false) int pageSize) {
+        List<GiftCertificateDto> certificateDtoList = giftCertificateService.doFilter(criteria, PageRequest.of(pageNumber, pageSize));
+        giftCertificateHateoasAdder.addLink(certificateDtoList);
+        return ResponseEntity.ok(new DataResponse<>(certificateDtoList));
     }
-
 }

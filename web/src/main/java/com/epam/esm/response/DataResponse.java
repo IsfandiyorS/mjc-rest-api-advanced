@@ -1,5 +1,8 @@
 package com.epam.esm.response;
 
+import lombok.Data;
+import org.springframework.hateoas.RepresentationModel;
+
 /**
  * Class {@code DataResponse} uses for cover all return responses as a one object
  * in {@link com.epam.esm.controller.GiftCertificateController} and
@@ -8,31 +11,17 @@ package com.epam.esm.response;
  * @author Sultonov Isfandiyor
  * @since 1.0
  */
+@Data
 public class DataResponse<T> {
     private T data;
-    private Boolean success;
+    private boolean success;
 
-    public DataResponse(Boolean success) {
-        this.success = success;
-    }
     public DataResponse(T data) {
         this.data = data;
         this.success = true;
     }
 
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
+    public DataResponse(boolean success){
         this.success = success;
     }
 }

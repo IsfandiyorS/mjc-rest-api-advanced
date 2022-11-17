@@ -7,12 +7,11 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
+import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
 /**
@@ -29,7 +28,7 @@ import static lombok.AccessLevel.*;
 public abstract class BaseAbstractDomain {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     protected Long id;
 
     @CreatedDate

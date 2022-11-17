@@ -1,10 +1,7 @@
 package com.epam.esm.domain;
 
 import com.epam.esm.enums.UserType;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
@@ -12,8 +9,10 @@ import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
 
-@Entity(name = "users")
+@Entity(name = "User")
+@Table(name = "users")
 @Data
+@Builder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,14 +28,16 @@ public class User extends BaseAbstractDomain{
     @Column(nullable = false)
     String lastName;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     String email;
 
     @Column(nullable = false)
     String password;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Column(unique = true, nullable = false)
+    String phoneNumber;
+
+    @Enumerated(EnumType.ORDINAL)
     UserType userType = UserType.USER;
 
     @OneToMany(mappedBy = "user")

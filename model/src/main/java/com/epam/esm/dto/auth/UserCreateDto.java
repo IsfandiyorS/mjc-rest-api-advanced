@@ -1,6 +1,7 @@
 package com.epam.esm.dto.auth;
 
 import com.epam.esm.dto.GenericCrudDto;
+import com.epam.esm.enums.UserType;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -34,5 +35,11 @@ public class UserCreateDto extends GenericCrudDto {
     @NotBlank(message = "Password should be valid")
     @Size(min = 8, message = "Password length must be more than 8")
     String password;
+
+    @NotBlank(message = "Phone number should be valid")
+    @Size(min = 12, message = "Enter correct phone number")
+    String phoneNumber;
+
+    UserType userType;
 
 }

@@ -1,19 +1,26 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.criteria.GiftCertificateCriteria;
 import com.epam.esm.criteria.TagCriteria;
-import com.epam.esm.dao.TagDao;
 import com.epam.esm.domain.Tag;
+import com.epam.esm.dto.certificate.GiftCertificateDto;
+import com.epam.esm.dto.certificate.TagCreateDto;
+import com.epam.esm.dto.certificate.TagDto;
 import com.epam.esm.enums.ErrorCodes;
 import com.epam.esm.exceptions.AlreadyExistException;
 import com.epam.esm.exceptions.ObjectNotFoundException;
+import com.epam.esm.mapper.auth.TagMapper;
+import com.epam.esm.repository.TagRepository;
+import com.epam.esm.repository.impl.TagRepositoryImpl;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
-import static com.epam.esm.constant.FilterParameters.*;
 import static java.lang.String.format;
 
 
@@ -27,59 +34,57 @@ import static java.lang.String.format;
 @Service
 public class TagServiceImpl implements TagService {
 
-    private final TagDao tagDao;
+    private final TagRepositoryImpl tagRepository;
+    private final TagMapper tagMapper;
 
     @Autowired
-    public TagServiceImpl(TagDao tagDao) {
-        this.tagDao = tagDao;
+    public TagServiceImpl(TagRepositoryImpl tagRepository, TagMapper tagMapper) {
+        this.tagRepository = tagRepository;
+        this.tagMapper = tagMapper;
     }
 
     @Override
-    public Tag getById(Long id) throws ObjectNotFoundException {
-        Optional<Tag> optionalTag = tagDao.findById(id);
+    public TagDto getById(Long id) {
+        Optional<Tag> optionalTag = tagRepository.findById(id);
         validate(optionalTag);
-        return optionalTag.get();
+        return tagMapper.toDto(optionalTag.get());
     }
 
     @Override
-    public List<Tag> getAll() {
-        return tagDao.findAll(PageRequest.of(1, 5));
+    public List<TagDto> getAll(PageRequest pageRequest) {
+        return tagMapper.toDtoList(tagRepository.findAll(pageRequest));
     }
 
     @Override
-    public Long create(Tag createEntity) {
-
-//        TagValidator.isCreateEntityValid(createEntity);
-
-        Optional<Tag> optionalTag = tagDao.findByName(createEntity.getName());
-
+    public Long create(TagCreateDto createEntity) {
+        Optional<Tag> optionalTag = tagRepository.findByName(createEntity.getName());
         if (optionalTag.isPresent()) {
             throw new AlreadyExistException(format(ErrorCodes.OBJECT_ALREADY_EXIST.message));
         }
-
-        return tagDao.save(createEntity);
+        return tagRepository.save(tagMapper.fromCreateDto(createEntity));
     }
 
     @Override
-    public Boolean delete(Long id) {
-        Tag tag = getById(id);
-        Long deleteId = tagDao.delete(tag);
-        return Objects.equals(tag.getId(), deleteId);
+    public int delete(Long id) {
+        Optional<Tag> optionalTag = tagRepository.findById(id);
+        validate(optionalTag);
+        Long deleteId = tagRepository.delete(optionalTag.get());
+        return Objects.equals(optionalTag.get().getId(), deleteId)?1:0;
     }
 
     @Override
-    public List<Tag> doFilter(TagCriteria criteria) {
-        Map<String, String> tagFilterMap = new HashMap<>();
-        tagFilterMap.put(TAG_NAME, criteria.getTagName());
-        tagFilterMap.put(SORT_BY_TAG_NAME, criteria.getSortByTagName());
-        tagFilterMap.put(PART_OF_TAG_NAME, criteria.getPartOfTagName());
-        return tagDao.doFilter(tagFilterMap);
+    public List<TagDto> doFilter(TagCriteria criteria, PageRequest pageable) {
+        return tagMapper.toDtoList(tagRepository.find(criteria, pageable));
+    }
+
+    public List<TagDto> findMostTags(){
+        return tagMapper.toDtoList(tagRepository.findMostPopular());
     }
 
     @Override
-    public void validate(Optional<Tag> entity) throws ObjectNotFoundException {
+    public void validate(Optional<Tag> entity) {
         if (entity.isEmpty()) {
-            throw new ObjectNotFoundException(format(ErrorCodes.OBJECT_NOT_FOUND_ID.message));
+            throw new ObjectNotFoundException(format(ErrorCodes.OBJECT_NOT_FOUND_ID.message, "Tag"));
         }
     }
 

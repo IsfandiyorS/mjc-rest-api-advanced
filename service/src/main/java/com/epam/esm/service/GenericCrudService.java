@@ -2,6 +2,9 @@ package com.epam.esm.service;
 
 import com.epam.esm.criteria.Criteria;
 import com.epam.esm.domain.BaseAbstractDomain;
+import com.epam.esm.dto.GenericCrudDto;
+import com.epam.esm.dto.GenericDto;
+import org.springframework.data.domain.PageRequest;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,7 +19,7 @@ import java.util.Optional;
  * @author Sultonov Isfandiyor
  * @version 1.0
  */
-public interface GenericCrudService<T extends BaseAbstractDomain, ID extends Serializable, C extends Criteria> {
+public interface GenericCrudService<T extends BaseAbstractDomain, CD, UD extends GenericCrudDto, D extends GenericDto, ID extends Serializable, C extends Criteria> {
 
     /**
      * Method for getting object by its ID
@@ -24,14 +27,14 @@ public interface GenericCrudService<T extends BaseAbstractDomain, ID extends Ser
      * @param id ID of object which will send from url
      * @return <T> type of object returns from database
      */
-    T getById(ID id);
+    D getById(ID id);
 
     /**
      * Method for getting all object
      *
      * @return List of required object
      */
-    List<T> getAll();
+    List<D> getAll(PageRequest pageRequest);
 
     /**
      * Method for creating object by its specific fields
@@ -39,7 +42,7 @@ public interface GenericCrudService<T extends BaseAbstractDomain, ID extends Ser
      * @param createEntity request parameters from url
      * @return Long as an ID of object
      */
-    Long create(T createEntity);
+    Long create(CD createEntity);
 
 
     /**
@@ -48,7 +51,7 @@ public interface GenericCrudService<T extends BaseAbstractDomain, ID extends Ser
      *
      * @param updateEntity request parameters from url
      */
-    default void update(T updateEntity) {}
+    default void update(UD updateEntity) {}
 
     /**
      * Method for deleting object or entity by its ID.
@@ -56,7 +59,7 @@ public interface GenericCrudService<T extends BaseAbstractDomain, ID extends Ser
      * @param id request parameters from url
      * @return Long as a response
      */
-    Boolean delete(ID id);
+    int delete(ID id);
 
     /**
      * Method for getting a list of objects by specific parameters.
@@ -64,7 +67,7 @@ public interface GenericCrudService<T extends BaseAbstractDomain, ID extends Ser
      * @param criteria request parameters from url
      * @return List of required object
      */
-    List<T> doFilter(C criteria);
+    List<D> doFilter(C criteria, PageRequest pageable);
 
     /**
      * Method for validating optional object if it exists or not in database.

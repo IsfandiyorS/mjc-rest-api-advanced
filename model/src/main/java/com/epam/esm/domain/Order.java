@@ -6,16 +6,14 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
 
-@Entity(name = "orders")
+@Entity(name = "Order")
+@Table(name = "orders")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor

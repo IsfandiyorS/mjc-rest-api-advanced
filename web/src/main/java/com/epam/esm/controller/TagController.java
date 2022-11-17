@@ -1,13 +1,17 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.criteria.TagCriteria;
-import com.epam.esm.domain.Tag;
+import com.epam.esm.dto.certificate.TagCreateDto;
+import com.epam.esm.dto.certificate.TagDto;
+import com.epam.esm.hateoas.domain.TagHateoasAdder;
 import com.epam.esm.response.DataResponse;
 import com.epam.esm.service.impl.TagServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -23,11 +27,13 @@ import java.util.List;
 @RequestMapping("/tag")
 public class TagController {
 
-    private TagServiceImpl tagService;
+    private final TagServiceImpl tagService;
+    private final TagHateoasAdder tagHateoasAdder;
 
     @Autowired
-    public TagController(TagServiceImpl tagService) {
+    public TagController(TagServiceImpl tagService, TagHateoasAdder tagHateoasAdder) {
         this.tagService = tagService;
+        this.tagHateoasAdder = tagHateoasAdder;
     }
 
     /**
@@ -37,8 +43,10 @@ public class TagController {
      * @return ResponseEntity with found tag entity
      */
     @GetMapping("/{id}")
-    public ResponseEntity<DataResponse<Tag>> getTagById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(new DataResponse<>(tagService.getById(id)));
+    public ResponseEntity<DataResponse<TagDto>> getTagById(@PathVariable("id") Long id) {
+        TagDto tagDto = tagService.getById(id);
+        tagHateoasAdder.addLink(tagDto);
+        return ResponseEntity.ok(new DataResponse<>(tagDto));
     }
 
     /**
@@ -47,8 +55,12 @@ public class TagController {
      * @return ResponseEntity body with list of found tags
      */
     @GetMapping("/")
-    public ResponseEntity<DataResponse<List<Tag>>> getAll() {
-        return ResponseEntity.ok(new DataResponse<>(tagService.getAll()));
+    public ResponseEntity<DataResponse<List<TagDto>>> getAll(@RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+                                                             @RequestParam(value = "pageSize", defaultValue = "5", required = false) int pageSize) {
+
+        List<TagDto> tagDtoList = tagService.getAll(PageRequest.of(pageNumber, pageSize));
+        tagHateoasAdder.addLink(tagDtoList);
+        return ResponseEntity.ok(new DataResponse<>(tagDtoList));
     }
 
     /**
@@ -58,7 +70,7 @@ public class TagController {
      * @return ResponseEntity with Long value which returns ID of created
      */
     @PostMapping("/create")
-    public ResponseEntity<DataResponse<Long>> create(@RequestBody Tag entity) {
+    public ResponseEntity<DataResponse<Long>> create(@Valid @RequestBody TagCreateDto entity) {
         return ResponseEntity.ok(new DataResponse<>(tagService.create(entity)));
     }
 
@@ -68,8 +80,9 @@ public class TagController {
      * @param id ID of tag to remove
      * @return ResponseEntity with Boolean body
      */
+    // fixme dataResponse return null on data field
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<DataResponse<Long>> deleteById(@PathVariable("id") Long id) {
+    public ResponseEntity<DataResponse<Integer>> deleteById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(new DataResponse<>(tagService.delete(id)));
     }
 
@@ -80,7 +93,19 @@ public class TagController {
      * @return ResponseEntity with List of found tags
      */
     @GetMapping("/filter")
-    public ResponseEntity<DataResponse<List<Tag>>> getTagsByFilterParams(@RequestBody TagCriteria criteria) {
-        return ResponseEntity.ok(new DataResponse<>(tagService.doFilter(criteria)));
+    public ResponseEntity<DataResponse<List<TagDto>>> getTagsByFilterParams(
+            @RequestBody TagCriteria criteria,
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "5", required = false) int pageSize) {
+        List<TagDto> tagDtoList = tagService.doFilter(criteria, PageRequest.of(pageNumber, pageSize));
+        tagHateoasAdder.addLink(tagDtoList);
+        return ResponseEntity.ok(new DataResponse<>(tagDtoList));
+    }
+
+    @GetMapping("/most_popular")
+    public ResponseEntity<DataResponse<List<TagDto>>> findMostPopular(){
+        List<TagDto> certificateDtoList = tagService.findMostTags();
+        tagHateoasAdder.addLink(certificateDtoList);
+        return ResponseEntity.ok(new DataResponse<>(certificateDtoList));
     }
 }
