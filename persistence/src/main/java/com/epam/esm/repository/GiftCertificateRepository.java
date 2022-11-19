@@ -17,13 +17,13 @@ import java.util.Optional;
  */
 public interface GiftCertificateRepository extends GenericCrudRepository<GiftCertificate, GiftCertificateCriteria> {
 
-    /**
-     * Method for adding a list of tags by gift certificate ID to database.
-     *
-     * @param giftCertificateId ID of gift certificate to update
-     * @param tagId ID of tag to attach to gift certificate
-     */
-    void attachTagToGiftCertificate(List<Tag> tagId, Long giftCertificateId);
+//    /**
+//     * Method for adding a list of tags by gift certificate ID to database.
+//     *
+//     * @param giftCertificateId ID of gift certificate to update
+//     * @param tagId ID of tag to attach to gift certificate
+//     */
+//    void attachTagToGiftCertificate(List<Tag> tagId, Long giftCertificateId);
 
     /**
      * Method for getting a list of tags from a table with a specific name.

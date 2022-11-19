@@ -74,8 +74,10 @@ public class GiftCertificateController {
      * @return ResponseEntity with Long value which returns ID of created gift
      */
     @PostMapping("/create")
-    public ResponseEntity<DataResponse<Long>> create(@Valid @RequestBody GiftCertificateCreateDto entity) {
-        return ResponseEntity.ok(new DataResponse<>(giftCertificateService.create(entity)));
+    public ResponseEntity<DataResponse<GiftCertificateDto>> create(@Valid @RequestBody GiftCertificateCreateDto entity) {
+        GiftCertificateDto giftCertificateDto = giftCertificateService.create(entity);
+        giftCertificateHateoasAdder.addLink(giftCertificateDto);
+        return ResponseEntity.ok(new DataResponse<>(giftCertificateDto));
     }
 
     /**
@@ -85,9 +87,10 @@ public class GiftCertificateController {
      * @return ResponseEntity with Boolean which indicate the gift is created
      */
     @PostMapping("/update")
-    public ResponseEntity<DataResponse<String>> update(@Valid @RequestBody GiftCertificateUpdateDto updateEntity) {
-        giftCertificateService.update(updateEntity);
-        return ResponseEntity.ok(new DataResponse<>("Successfully updated"));
+    public ResponseEntity<DataResponse<GiftCertificateDto>> update(@Valid @RequestBody GiftCertificateUpdateDto updateEntity) {
+        GiftCertificateDto updatedCertificate = giftCertificateService.update(updateEntity);
+        giftCertificateHateoasAdder.addLink(updatedCertificate);
+        return ResponseEntity.ok(new DataResponse<>(updatedCertificate));
     }
 
     /**

@@ -22,4 +22,5 @@ public interface TagRepository extends GenericCrudRepository<Tag, TagCriteria> {
      */
     Optional<Tag> findByName(String name);
 
+    List<Tag> findMostPopular();
 }

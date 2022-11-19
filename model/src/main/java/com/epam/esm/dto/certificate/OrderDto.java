@@ -29,7 +29,6 @@ public class OrderDto extends RepresentationModel<OrderDto> implements GenericDt
 
     GiftCertificateDto giftCertificateDto;
 
-
     @Builder(builderMethodName = "orderBuilder")
     public OrderDto(Long id, BigDecimal price, Long orderQuantity, UserDto userDto,
                     GiftCertificateDto giftCertificateDto, String orderedTime) {

@@ -31,23 +31,23 @@ public abstract class AbstractCrudRepository<T extends BaseAbstractDomain, C ext
     }
 
     @Transactional
-    public Long save(T entity) {
+    public T save(T entity) {
         if (entity == null) {
             return null;
         }
         entityManager.persist(entity);
-        //fixme read about flush
         entityManager.flush();
-        return entity.getId();
+        return entity;
     }
 
     public Optional<T> findById(Long id) {
         try {
-            return Optional.ofNullable(entityManager.createQuery(
+            Optional<T> singleResult = Optional.ofNullable(entityManager.createQuery(
                             "SELECT t FROM " + persistentClass.getSimpleName() +
                                     " t WHERE t.id = ?1 and t.state <> 2", persistentClass)
                     .setParameter(1, id)
                     .getSingleResult());
+            return singleResult;
         } catch (NoResultException e) {
             return Optional.empty();
         }
@@ -93,7 +93,11 @@ public abstract class AbstractCrudRepository<T extends BaseAbstractDomain, C ext
             return null;
         }
         entity.setState(State.DELETED);
-        return save(entity);
+        entityManager.persist(entity);
+
+        // fixme read about flush
+        entityManager.flush();
+        return entity.getId();
     }
 
 

@@ -3,6 +3,7 @@ package com.epam.esm;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -10,11 +11,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-/**
- * Hello world!
- *
- */
 @EnableWebMvc
+@EnableJpaAuditing
 @SpringBootApplication(scanBasePackages = "com.epam.esm")
 public class SpringRestApplication {
     /**

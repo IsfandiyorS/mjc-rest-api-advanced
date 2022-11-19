@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.epam.esm.utils.BaseUtils.isEmptyList;
 import static java.lang.String.format;
 
 /**
@@ -42,6 +43,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final GiftCertificateRepository giftCertificateRepository;
     private final TagRepository tagRepository;
     private final GiftCertificateMapper giftCertificateMapper;
+
     private final TagMapper tagMapper;
 
     @Autowired
@@ -65,7 +67,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public Long create(GiftCertificateCreateDto createEntity) {
+    public GiftCertificateDto create(GiftCertificateCreateDto createEntity) {
 
         Optional<GiftCertificate> certificateByName = giftCertificateRepository.findByName(createEntity.getName());
 
@@ -73,28 +75,22 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             throw new AlreadyExistException(format(ErrorCodes.OBJECT_ALREADY_EXIST.message));
         }
 
-        List<Tag> tagEntity = new ArrayList<>();
-        if (!(createEntity.getTagCreateDtoList() == null || createEntity.getTagCreateDtoList().isEmpty())) {
-            List<TagCreateDto> createdTagList = createEntity.getTagCreateDtoList();
-            for (TagCreateDto tag : createdTagList) {
-                Optional<Tag> optionalTag = tagRepository.findByName(tag.getName());
-
-                if (optionalTag.isEmpty()) {
-                    Long savedTagId = tagRepository.save(tagMapper.fromCreateDto(tag));
-                    tagEntity.add(tagRepository.findById(savedTagId).get());
-                } else {
-                    tagEntity.add(optionalTag.get());
-                }
-            }
-        }
-
         GiftCertificate giftCertificate = giftCertificateMapper.fromCreateDto(createEntity);
-        giftCertificate.setTagList(tagEntity);
-        return giftCertificateRepository.save(giftCertificate);
+
+        if (!isEmptyList(createEntity.getTagCreateDtoList())) {
+            List<Tag> tagEntity = new ArrayList<>();
+            List<TagCreateDto> createdTagList = createEntity.getTagCreateDtoList();
+            for (TagCreateDto tagCreateDto : createdTagList) {
+                addTagToList(tagEntity, tagCreateDto);
+            }
+            giftCertificate.setTagList(tagEntity);
+        }
+        GiftCertificate save = giftCertificateRepository.save(giftCertificate);
+        return giftCertificateMapper.toDto(save);
     }
 
     @Override
-    public void update(GiftCertificateUpdateDto updateEntity) {
+    public GiftCertificateDto update(GiftCertificateUpdateDto updateEntity) {
 
         if (updateEntity.getId() == null) {
             throw new ValidationException(format(ErrorCodes.OBJECT_ID_REQUIRED.message));
@@ -105,23 +101,22 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
         GiftCertificate updatedEntity = giftCertificateMapper.fromUpdateDto(updateEntity, giftCertificate.get());
 
-        List<Tag> tagCreatedList = new ArrayList<>();
         if (updateEntity.getTagCreateDtoList() != null) {
             List<Tag> allCreatedTags = updatedEntity.getTagList();
-            tagCreatedList = getTagsNotAttachedTags(updateEntity.getTagCreateDtoList(), allCreatedTags);
+            List<Tag> tagCreatedList = getNotAttachedTags(updateEntity.getTagCreateDtoList(), allCreatedTags);
+            updatedEntity.setTagList(tagCreatedList);
         }
 
-        giftCertificateRepository.update(updatedEntity);
-        giftCertificateRepository.attachTagToGiftCertificate(tagCreatedList, updatedEntity.getId());
+        GiftCertificate updatedCertificate = giftCertificateRepository.update(updatedEntity);
+        return giftCertificateMapper.toDto(updatedCertificate);
     }
 
-    // fixme the result return the null value
     @Override
     public int delete(Long id) {
         Optional<GiftCertificate> optionalGiftCertificate = giftCertificateRepository.findById(id);
         validate(optionalGiftCertificate);
         Long deleteId = giftCertificateRepository.delete(optionalGiftCertificate.get());
-        return Objects.equals(optionalGiftCertificate.get().getId(), deleteId)?1:0;
+        return Objects.equals(optionalGiftCertificate.get().getId(), deleteId) ? 1 : 0;
     }
 
     @Override
@@ -137,21 +132,20 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Transactional
-    List<Tag> getTagsNotAttachedTags(List<TagCreateDto> requestTags, List<Tag> allCreatedNewTags) {
-        List<Tag> tagEntity = new ArrayList<>();
-        if (requestTags == null) {
+    List<Tag> getNotAttachedTags(List<TagCreateDto> tagCreateDtoList, List<Tag> alreadyCreatedTags) {
+        if (isEmptyList(tagCreateDtoList)) {
             return null;
         }
-        if (allCreatedNewTags == null || allCreatedNewTags.isEmpty()) {
+        if (isEmptyList(alreadyCreatedTags)) {
             List<Long> idList = new ArrayList<>();
-            requestTags.forEach(tagCreateDto -> idList.add(tagRepository.save(tagMapper.fromCreateDto(tagCreateDto))));
+            tagCreateDtoList.forEach(tagCreateDto -> idList.add(tagRepository.save(tagMapper.fromCreateDto(tagCreateDto)).getId()));
 
-            idList.forEach(id -> tagEntity.add(tagRepository.findById(id).get()));
-            return tagEntity;
+            idList.forEach(id -> alreadyCreatedTags.add(tagRepository.findById(id).get()));
+            return alreadyCreatedTags;
         } else {
-            for (TagCreateDto request : requestTags) {
+            for (TagCreateDto request : tagCreateDtoList) {
                 boolean isExist = false;
-                for (Tag created : allCreatedNewTags) {
+                for (Tag created : alreadyCreatedTags) {
                     if (Objects.equals(request.getName(), created.getName())) {
                         isExist = true;
                         break;
@@ -160,16 +154,19 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 if (isExist) {
                     throw new AlreadyExistException(format(ErrorCodes.OBJECT_ALREADY_EXIST.message));
                 }
-                Optional<Tag> optionalTag = tagRepository.findByName(request.getName());
-                Long savedTagId;
-                if (optionalTag.isEmpty()) {
-                    savedTagId = tagRepository.save(tagMapper.fromCreateDto(request));
-                    tagEntity.add(tagRepository.findById(savedTagId).get());
-                } else {
-                    tagEntity.add(optionalTag.get());
-                }
+                addTagToList(alreadyCreatedTags, request);
             }
         }
-        return tagEntity;
+        return alreadyCreatedTags;
+    }
+
+    private void addTagToList(List<Tag> tagEntityList, TagCreateDto tag) {
+        Optional<Tag> optionalTag = tagRepository.findByName(tag.getName());
+        if (optionalTag.isEmpty()) {
+            Tag savedTag = tagRepository.save(tagMapper.fromCreateDto(tag));
+            tagEntityList.add(tagRepository.findById(savedTag.getId()).get());
+        } else {
+            tagEntityList.add(optionalTag.get());
+        }
     }
 }

@@ -21,4 +21,6 @@ public class TagCriteria implements Criteria{
     String tagName;
     String sortByTagName;
     String partOfTagName;
+
+
 }

@@ -9,7 +9,7 @@ import org.mapstruct.*;
 
 import static org.mapstruct.NullValuePropertyMappingStrategy.*;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper extends BaseMapper<User, UserCreateDto, UserUpdateDto, UserDto> {
 
 

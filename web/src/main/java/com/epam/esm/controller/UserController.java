@@ -63,8 +63,10 @@ public class UserController {
      * @return ResponseEntity with Long value which returns ID of created gift
      */
     @PostMapping("/create")
-    public ResponseEntity<DataResponse<Long>> create(@Valid @RequestBody UserCreateDto entity) {
-        return ResponseEntity.ok(new DataResponse<>(userService.create(entity)));
+    public ResponseEntity<DataResponse<UserDto>> create(@Valid @RequestBody UserCreateDto entity) {
+        UserDto userDto = userService.create(entity);
+        userHateoasAdder.addLink(userDto);
+        return ResponseEntity.ok(new DataResponse<>(userDto));
     }
 
     /**
@@ -74,12 +76,11 @@ public class UserController {
      * @return ResponseEntity with Boolean which indicate the gift is created
      */
     @PatchMapping("/update")
-    public ResponseEntity<DataResponse<String>> update(@Valid @RequestBody UserUpdateDto updateEntity) {
-        userService.update(updateEntity);
-        return ResponseEntity.ok(new DataResponse<>("Successfully updated"));
+    public ResponseEntity<DataResponse<UserDto>> update(@Valid @RequestBody UserUpdateDto updateEntity) {
+        UserDto updatedUser = userService.update(updateEntity);
+        userHateoasAdder.addLink(updatedUser);
+        return ResponseEntity.ok(new DataResponse<>(updatedUser));
     }
-
-    // fixme ask about delete update and create method to add or not hyper link
 
     /**
      * Method for removing gift certificate by ID.

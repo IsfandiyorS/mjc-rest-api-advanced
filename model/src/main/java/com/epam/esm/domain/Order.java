@@ -1,20 +1,19 @@
 package com.epam.esm.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.StringJoiner;
 
 import static lombok.AccessLevel.PRIVATE;
 
 @Entity(name = "Order")
 @Table(name = "orders")
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,4 +31,22 @@ public class Order extends BaseAbstractDomain {
     @ManyToOne
     @JoinColumn(name = "gift_certificate_id")
     GiftCertificate giftCertificate;
+
+    public Order(Long id, BigDecimal price, Long orderQuantity, User user, GiftCertificate giftCertificate) {
+        super(id);
+        this.price = price;
+        this.orderQuantity = orderQuantity;
+        this.user = user;
+        this.giftCertificate = giftCertificate;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Order.class.getSimpleName() + "[", "]")
+                .add("price=" + price)
+                .add("orderQuantity=" + orderQuantity)
+                .add("user=" + user)
+                .add("giftCertificate=" + giftCertificate)
+                .toString();
+    }
 }

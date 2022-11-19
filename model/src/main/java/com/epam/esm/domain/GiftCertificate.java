@@ -7,6 +7,7 @@ import org.aspectj.weaver.ast.Or;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.StringJoiner;
 
 import static lombok.AccessLevel.*;
 
@@ -18,7 +19,8 @@ import static lombok.AccessLevel.*;
  */
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
@@ -43,4 +45,24 @@ public class GiftCertificate extends BaseAbstractDomain {
             joinColumns = @JoinColumn(name = "gift_certificate_id", referencedColumnName="id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
     List<Tag> tagList;
+
+    public GiftCertificate(Long id, String name, String description, BigDecimal price, Integer duration, List<Tag> tagList) {
+        super(id);
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.duration = duration;
+        this.tagList = tagList;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", GiftCertificate.class.getSimpleName() + "[", "]")
+                .add("name='" + name + "'")
+                .add("description='" + description + "'")
+                .add("price=" + price)
+                .add("duration=" + duration)
+                .add("tagList=" + tagList)
+                .toString();
+    }
 }

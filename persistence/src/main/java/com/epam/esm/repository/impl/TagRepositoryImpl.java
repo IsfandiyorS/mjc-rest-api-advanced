@@ -50,6 +50,7 @@ public class TagRepositoryImpl extends AbstractCrudRepository<Tag, TagCriteria> 
         }
     }
 
+    @Override
     public List<Tag> findMostPopular() {
         return entityManager.createQuery(FIND_MOST_WIDELY_USED_TAG_OF_USER_WITH_HIGHEST_COST_OF_ALL_ORDERS_QUERY,
                 Tag.class).getResultList();

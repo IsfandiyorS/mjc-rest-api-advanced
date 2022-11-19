@@ -6,7 +6,6 @@ package com.epam.esm.exceptions;
  * @author Sultonov Isfandiyor
  * @version 1.0
  */
-// fixme concat Two exceptions to onw
 public class ObjectNotFoundException extends RuntimeException {
     public ObjectNotFoundException() {
     }

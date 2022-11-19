@@ -64,8 +64,10 @@ public class OrderController {
      * @return ResponseEntity with Long value which returns ID of created gift
      */
     @PostMapping("/create")
-    public ResponseEntity<DataResponse<Long>> create(@Valid @RequestBody OrderCreateDto entity) {
-        return ResponseEntity.ok(new DataResponse<>(orderService.create(entity)));
+    public ResponseEntity<DataResponse<OrderDto>> create(@Valid @RequestBody OrderCreateDto entity) {
+        OrderDto orderDto = orderService.create(entity);
+        orderHateoasAdder.addLink(orderDto);
+        return ResponseEntity.ok(new DataResponse<>(orderDto));
     }
 
     @GetMapping("/user/{id}")
@@ -95,9 +97,10 @@ public class OrderController {
      * @return ResponseEntity with Boolean which indicate the gift is created
      */
     @PatchMapping("/update")
-    public ResponseEntity<DataResponse<String>> update(@Valid @RequestBody OrderUpdateDto updateEntity) {
-        orderService.update(updateEntity);
-        return ResponseEntity.ok(new DataResponse<>("Successfully updated"));
+    public ResponseEntity<DataResponse<OrderDto>> update(@Valid @RequestBody OrderUpdateDto updateEntity) {
+        OrderDto updatedOrder = orderService.update(updateEntity);
+        orderHateoasAdder.addLink(updatedOrder);
+        return ResponseEntity.ok(new DataResponse<>(updatedOrder));
     }
 
     /**

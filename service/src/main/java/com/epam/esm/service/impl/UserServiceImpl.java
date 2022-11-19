@@ -13,7 +13,6 @@ import com.epam.esm.repository.UserRepository;
 import com.epam.esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,13 +27,11 @@ import static java.lang.String.format;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
     }
 
@@ -54,7 +51,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Long create(UserCreateDto createEntity) {
+    public UserDto create(UserCreateDto createEntity) {
 
         Optional<User> userByUsername = userRepository.findByUsername(createEntity.getUsername());
         baseValidation(userByUsername, USERNAME);
@@ -65,14 +62,12 @@ public class UserServiceImpl implements UserService {
         Optional<User> userByPhoneNumber = userRepository.findByPhoneNumber(createEntity.getPhoneNumber());
         baseValidation(userByPhoneNumber, PHONE_NUMBER);
 
-        createEntity.setPassword(passwordEncoder.encode(createEntity.getPassword()));
-
-        createEntity.setUserType(UserType.USER);
-        return userRepository.save(userMapper.fromCreateDto(createEntity));
+        User savedUser = userRepository.save(userMapper.fromCreateDto(createEntity));
+        return userMapper.toDto(savedUser);
     }
 
     @Override
-    public void update(UserUpdateDto updateDto) {
+    public UserDto update(UserUpdateDto updateDto) {
 
         Optional<User> optionalUser = userRepository.findById(updateDto.getId());
         validate(optionalUser);
@@ -91,11 +86,8 @@ public class UserServiceImpl implements UserService {
             baseValidation(userByPhoneNumber, PHONE_NUMBER);
         }
 
-        if (!isEmptyObject(updateDto.getPassword())) {
-            updateDto.setPassword(passwordEncoder.encode(updateDto.getPassword()));
-        }
-
-        userRepository.update(userMapper.fromUpdateDto(updateDto, optionalUser.get()));
+        User updatedUser = userRepository.update(userMapper.fromUpdateDto(updateDto, optionalUser.get()));
+        return userMapper.toDto(updatedUser);
     }
 
     @Override

@@ -7,7 +7,7 @@ import com.epam.esm.dto.certificate.TagUpdateDto;
 import com.epam.esm.mapper.BaseMapper;
 import org.mapstruct.*;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface TagMapper extends BaseMapper<Tag, TagCreateDto, TagUpdateDto, TagDto> {
 
     @Mapping(source = "updateDto.name", target = "name", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

@@ -70,8 +70,10 @@ public class TagController {
      * @return ResponseEntity with Long value which returns ID of created
      */
     @PostMapping("/create")
-    public ResponseEntity<DataResponse<Long>> create(@Valid @RequestBody TagCreateDto entity) {
-        return ResponseEntity.ok(new DataResponse<>(tagService.create(entity)));
+    public ResponseEntity<DataResponse<TagDto>> create(@Valid @RequestBody TagCreateDto entity) {
+        TagDto tagDto = tagService.create(entity);
+        tagHateoasAdder.addLink(tagDto);
+        return ResponseEntity.ok(new DataResponse<>(tagDto));
     }
 
     /**

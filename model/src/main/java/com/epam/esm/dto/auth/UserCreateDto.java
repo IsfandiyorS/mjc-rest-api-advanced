@@ -40,6 +40,4 @@ public class UserCreateDto extends GenericCrudDto {
     @Size(min = 12, message = "Enter correct phone number")
     String phoneNumber;
 
-    UserType userType;
-
 }

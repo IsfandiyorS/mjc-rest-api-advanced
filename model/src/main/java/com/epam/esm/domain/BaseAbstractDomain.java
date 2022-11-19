@@ -1,5 +1,7 @@
 package com.epam.esm.domain;
 
+import com.epam.esm.domain.audit.AppAuditorAware;
+import com.epam.esm.domain.audit.Auditable;
 import com.epam.esm.enums.State;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -10,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.StringJoiner;
 
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
@@ -21,28 +24,40 @@ import static lombok.AccessLevel.*;
  * @version 1.0
  */
 @MappedSuperclass
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = PROTECTED)
-public abstract class BaseAbstractDomain {
+public abstract class BaseAbstractDomain extends Auditable<String> {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    protected Long id;
+     Long id;
 
     @CreatedDate
     @Column(nullable = false)
-    protected LocalDateTime createDate = LocalDateTime.now();
+     LocalDateTime createDate = LocalDateTime.now();
 
     @LastModifiedDate
-    protected LocalDateTime lastUpdateDate;
+     LocalDateTime lastUpdateDate;
 
     @Column(columnDefinition = "NUMERIC default 0")
-    protected State state = State.CREATED;
+     State state = State.CREATED;
 
     public BaseAbstractDomain(Long id){
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", BaseAbstractDomain.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("createDate=" + createDate)
+                .add("lastUpdateDate=" + lastUpdateDate)
+                .add("state=" + state)
+                .toString();
     }
 }
 

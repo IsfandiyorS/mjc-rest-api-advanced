@@ -20,9 +20,9 @@ import static lombok.AccessLevel.*;
 @FieldDefaults(level = PRIVATE)
 public class GiftCertificateCriteria implements Criteria {
     String name;
-    List<String> tagNameList;
     String partOfName;
     String partOfDescription;
     String sortByName;
     String sortByCreateDate;
+    List<String> tagNameList;
 }

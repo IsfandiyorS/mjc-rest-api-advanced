@@ -23,7 +23,7 @@ public interface GenericCrudRepository<T extends BaseAbstractDomain, C extends C
      *
      * @param entity entity object to save
      */
-    Long save(T entity);
+    T save(T entity);
 
     /**
      * Method for updating an entity in a table if updating required.

@@ -7,7 +7,7 @@ import com.epam.esm.dto.certificate.GiftCertificateUpdateDto;
 import com.epam.esm.mapper.BaseMapper;
 import org.mapstruct.*;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = TagMapper.class)
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = TagMapper.class)
 public interface GiftCertificateMapper extends BaseMapper<GiftCertificate, GiftCertificateCreateDto, GiftCertificateUpdateDto, GiftCertificateDto> {
 
     @Mapping(target = "tagDtoList", source = "tagList")

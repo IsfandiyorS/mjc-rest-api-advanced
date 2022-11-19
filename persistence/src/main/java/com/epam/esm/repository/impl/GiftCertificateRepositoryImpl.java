@@ -46,15 +46,23 @@ public class GiftCertificateRepositoryImpl extends AbstractCrudRepository<GiftCe
         }
     }
 
-    @Transactional
-    @Override
-    public void attachTagToGiftCertificate(List<Tag> tagId, Long giftCertificateId) {
-        tagId.forEach(tag ->
-                entityManager.createNativeQuery("INSERT INTO gift_certificate_tag(gift_certificate_id, tag_id) VALUES(?1, ?2)")
-                        .setParameter(1, giftCertificateId)
-                        .setParameter(2, tag.getId())
-                        .executeUpdate()
-        );
-    }
+//    @Transactional
+//    @Override
+//    public void attachTagToGiftCertificate(List<Tag> tagId, Long giftCertificateId) {
+//        tagId.forEach(tag ->
+//                entityManager.createNativeQuery("INSERT INTO gift_certificate_tag(gift_certificate_id, tag_id) VALUES(?1, ?2)")
+//                        .setParameter(1, giftCertificateId)
+//                        .setParameter(2, tag.getId())
+//                        .executeUpdate()
+//        );
+//    }
 
+    @Override
+    public GiftCertificate update(GiftCertificate update) {
+        if (update == null){
+            return null;
+        }
+        entityManager.persist(update);
+        return update;
+    }
 }

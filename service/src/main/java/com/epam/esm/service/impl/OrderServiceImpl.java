@@ -55,15 +55,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Long create(OrderCreateDto createEntity) {
+    public OrderDto create(OrderCreateDto createEntity) {
 
         Optional<User> optionalUser = userRepository.findById(createEntity.getUserId());
-        if (optionalUser.isEmpty()){
+        if (optionalUser.isEmpty()) {
             throw new ObjectNotFoundException(format(USER_NOT_FOUND.message, createEntity.getUserId()));
         }
 
         Optional<GiftCertificate> optionalGiftCertificate = giftCertificateRepository.findById(createEntity.getGiftCertificateId());
-        if (optionalGiftCertificate.isEmpty()){
+        if (optionalGiftCertificate.isEmpty()) {
             throw new ObjectNotFoundException(format(OBJECT_NOT_FOUND.message, createEntity.getGiftCertificateId()));
         }
 
@@ -72,7 +72,7 @@ public class OrderServiceImpl implements OrderService {
         order.setGiftCertificate(optionalGiftCertificate.get());
         order.setPrice(optionalGiftCertificate.get().getPrice().multiply(BigDecimal.valueOf(createEntity.getOrderQuantity())));
 
-        return orderRepository.save(order);
+        return orderMapper.toDto(orderRepository.save(order));
     }
 
     @Override
@@ -82,28 +82,30 @@ public class OrderServiceImpl implements OrderService {
         validate(optionalOrder);
 
         Long delete = orderRepository.delete(optionalOrder.get());
-        return Objects.equals(delete, optionalOrder.get().getId()) ?1:0;
+        return Objects.equals(delete, optionalOrder.get().getId()) ? 1 : 0;
     }
 
 
     // fixme change price of order depend on its quantity
     @Override
-    public void update(OrderUpdateDto updateEntity) {
+    public OrderDto update(OrderUpdateDto updateEntity) {
         Optional<Order> optionalOrder = orderRepository.findById(updateEntity.getId());
         validate(optionalOrder);
 
-        Order order = orderMapper.fromUpdateDto(updateEntity, optionalOrder.get());
-        BigDecimal price = order.getGiftCertificate().getPrice();
+        Order entityOrder = optionalOrder.get();
+        BigDecimal price = entityOrder.getGiftCertificate().getPrice();
         long orderDifference = updateEntity.getOrderQuantity() - optionalOrder.get().getOrderQuantity();
-        order.setPrice(order.getPrice().add(price.multiply(BigDecimal.valueOf(orderDifference))));
+        BigDecimal multiply = price.multiply(BigDecimal.valueOf(orderDifference));
+        entityOrder.setPrice(entityOrder.getPrice().add(multiply));
 
-        orderRepository.update(order);
+        Order updatedOrder = orderRepository.update(orderMapper.fromUpdateDto(updateEntity, entityOrder));
+        return orderMapper.toDto(updatedOrder);
     }
 
     @Override
     public List<OrderDto> getOrderByUserId(PageRequest pageRequest, Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()){
+        if (optionalUser.isEmpty()) {
             throw new ObjectNotFoundException(format(USER_NOT_FOUND.message, ID));
         }
 
@@ -115,12 +117,12 @@ public class OrderServiceImpl implements OrderService {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         validate(optionalOrder);
         Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()){
+        if (optionalUser.isEmpty()) {
             throw new ObjectNotFoundException(format(USER_NOT_FOUND.message, "id"));
         }
 
         Optional<Order> order = orderRepository.findOrderByIdAndUserId(orderId, userId);
-        if (order.isPresent()){
+        if (order.isPresent()) {
             return orderMapper.toDto(order.get());
         } else {
             throw new ObjectNotFoundException(format(OBJECT_NOT_FOUND.message, "Order"));
@@ -136,7 +138,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void validate(Optional<Order> entity) {
-        if (entity.isEmpty()){
+        if (entity.isEmpty()) {
             throw new ObjectNotFoundException(format(OBJECT_NOT_FOUND_ID.message, "Order"));
         }
     }

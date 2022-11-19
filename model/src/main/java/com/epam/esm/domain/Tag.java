@@ -5,6 +5,8 @@ import lombok.experimental.FieldDefaults;
 
 import javax.persistence.Entity;
 
+import java.util.StringJoiner;
+
 import static lombok.AccessLevel.*;
 
 /**
@@ -14,7 +16,8 @@ import static lombok.AccessLevel.*;
  * @version 1.0
  */
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
@@ -22,4 +25,16 @@ import static lombok.AccessLevel.*;
 @FieldDefaults(level = PRIVATE)
 public class Tag extends BaseAbstractDomain {
     String name;
+
+    public Tag(Long id, String name) {
+        super(id);
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Tag.class.getSimpleName() + "[", "]")
+                .add("name='" + name + "'")
+                .toString();
+    }
 }

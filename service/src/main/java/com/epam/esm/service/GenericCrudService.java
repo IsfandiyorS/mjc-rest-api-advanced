@@ -42,7 +42,7 @@ public interface GenericCrudService<T extends BaseAbstractDomain, CD, UD extends
      * @param createEntity request parameters from url
      * @return Long as an ID of object
      */
-    Long create(CD createEntity);
+    D create(CD createEntity);
 
 
     /**
@@ -51,7 +51,7 @@ public interface GenericCrudService<T extends BaseAbstractDomain, CD, UD extends
      *
      * @param updateEntity request parameters from url
      */
-    default void update(UD updateEntity) {}
+    default D update(UD updateEntity) {return null;}
 
     /**
      * Method for deleting object or entity by its ID.
