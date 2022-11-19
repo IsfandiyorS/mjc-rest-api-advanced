@@ -23,8 +23,4 @@ public class BaseUtils {
         return l == null;
     }
 
-    public boolean isStringLengthValid(String field, int minLength, int maxLength){
-        return field.length()>=minLength && field.length()<=maxLength;
-    }
-
 }

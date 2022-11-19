@@ -96,7 +96,7 @@ public class OrderController {
      * @param updateEntity gift certificate entity, which include information to update with its ID
      * @return ResponseEntity with Boolean which indicate the gift is created
      */
-    @PatchMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<DataResponse<OrderDto>> update(@Valid @RequestBody OrderUpdateDto updateEntity) {
         OrderDto updatedOrder = orderService.update(updateEntity);
         orderHateoasAdder.addLink(updatedOrder);

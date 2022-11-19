@@ -85,8 +85,6 @@ public class OrderServiceImpl implements OrderService {
         return Objects.equals(delete, optionalOrder.get().getId()) ? 1 : 0;
     }
 
-
-    // fixme change price of order depend on its quantity
     @Override
     public OrderDto update(OrderUpdateDto updateEntity) {
         Optional<Order> optionalOrder = orderRepository.findById(updateEntity.getId());

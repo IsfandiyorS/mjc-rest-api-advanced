@@ -15,9 +15,7 @@ import javax.persistence.criteria.CriteriaQuery;
  */
 public interface QueryCreator<T extends BaseAbstractDomain, C extends Criteria> {
 
-
     /**
-     *
      * @param criteriaBuilder the criteria builder
      * @return the criteria query
      */

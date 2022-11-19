@@ -33,8 +33,8 @@ public class Tag extends BaseAbstractDomain {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Tag.class.getSimpleName() + "[", "]")
-                .add("name='" + name + "'")
-                .toString();
+        return "Tag{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }

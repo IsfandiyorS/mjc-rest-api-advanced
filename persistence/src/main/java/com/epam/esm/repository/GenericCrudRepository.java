@@ -5,10 +5,8 @@ import com.epam.esm.domain.BaseAbstractDomain;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-// fixme change all of them to another
 /**
  * Interface {@code GenericCrudDao} describes CRUD operations for working with database tables.
  *
@@ -31,6 +29,7 @@ public interface GenericCrudRepository<T extends BaseAbstractDomain, C extends C
      * @param entity is an object to update
      */
     T update(T entity);
+
     /**
      * Method for removing an entity from a table by ID.
      *

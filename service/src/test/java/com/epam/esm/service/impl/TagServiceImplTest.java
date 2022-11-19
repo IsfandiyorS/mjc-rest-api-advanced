@@ -43,7 +43,7 @@ class TagServiceImplTest {
 
         TagDto actualId = tagService.create(TAG_CREATE_DTO);
 
-        assertEquals(CREATED_NEW_TAG_ENTITY.getName(), actualId.getName());
+        assertEquals(CREATED_TAG_ENTITY, actualId);
         verify(tagRepository, times(1)).save(any(Tag.class));
     }
 

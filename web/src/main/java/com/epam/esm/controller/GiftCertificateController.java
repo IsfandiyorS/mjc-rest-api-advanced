@@ -86,7 +86,7 @@ public class GiftCertificateController {
      * @param updateEntity gift certificate entity, which include information to update with its ID
      * @return ResponseEntity with Boolean which indicate the gift is created
      */
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<DataResponse<GiftCertificateDto>> update(@Valid @RequestBody GiftCertificateUpdateDto updateEntity) {
         GiftCertificateDto updatedCertificate = giftCertificateService.update(updateEntity);
         giftCertificateHateoasAdder.addLink(updatedCertificate);

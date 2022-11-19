@@ -17,10 +17,9 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class TagCriteria implements Criteria{
+public class TagCriteria implements Criteria {
     String tagName;
     String sortByTagName;
     String partOfTagName;
-
 
 }

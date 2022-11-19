@@ -17,7 +17,6 @@ import static com.epam.esm.constant.UserColumn.*;
 
 @Component
 public class UserCriteriaQueryCreator extends AbstractQueryCreator<User> implements QueryCreator<User, UserCriteria> {
-
     @Override
     public CriteriaQuery<User> createGetQuery(UserCriteria criteria, CriteriaBuilder criteriaBuilder, Class<User> persistentClass) {
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(persistentClass);

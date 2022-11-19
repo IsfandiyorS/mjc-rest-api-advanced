@@ -44,7 +44,7 @@ class UserServiceImplTest {
 
         UserDto actualUserDto = userService.getById(USER_ID);
 
-        assertEquals(CREATED_USER.getId(), actualUserDto.getId());
+        assertEquals(USER_DTO, actualUserDto);
         verify(userRepository, times(1)).findById(USER_ID);
     }
 
@@ -92,6 +92,7 @@ class UserServiceImplTest {
         when(userRepository.delete(USER_ENTITY)).thenReturn(USER_ID);
 
         int actualId = userService.delete(USER_ID);
+
         assertEquals(1, actualId);
         verify(userRepository, times(1)).delete(any());
     }
@@ -101,8 +102,8 @@ class UserServiceImplTest {
         when(userRepository.find(USER_CRITERIA, PAGE_REQUEST)).thenReturn(List.of(USER_ENTITY));
 
         List<UserDto> actualDtoList = userService.doFilter(USER_CRITERIA, PAGE_REQUEST);
-        assertNotNull(actualDtoList);
 
+        assertNotNull(actualDtoList);
         verify(userRepository, times(1)).find(USER_CRITERIA, PAGE_REQUEST);
     }
 

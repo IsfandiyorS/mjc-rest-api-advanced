@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS tag
 (
     id               bigserial primary key,
-    create_date      timestamp default now(),
+    create_date      timestamp not null,
     last_update_date timestamp,
     state            numeric default 0,
     name             varchar(255)
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS tag
 CREATE TABLE IF NOT EXISTS gift_certificate
 (
     id               bigserial primary key,
-    create_date      timestamp default now(),
+    create_date      timestamp not null,
     last_update_date timestamp,
     state            numeric default 0,
     description      varchar(255),
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS gift_certificate_tag
 CREATE TABLE IF NOT EXISTS users
 (
     id               bigserial  primary key,
-    create_date      timestamp  default now(),
+    create_date      timestamp  not null,
     last_update_date timestamp,
     state            numeric default 0,
     email            varchar(255) not null unique,
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS users
 CREATE TABLE IF NOT EXISTS orders
 (
     id                  bigserial primary key,
-    create_date         timestamp  default now(),
+    create_date         timestamp  not null,
     last_update_date    timestamp,
     state               numeric default 0,
     order_quantity      bigint,

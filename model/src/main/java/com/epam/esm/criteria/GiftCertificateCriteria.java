@@ -1,11 +1,13 @@
 package com.epam.esm.criteria;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
-import static lombok.AccessLevel.*;
+import static lombok.AccessLevel.PRIVATE;
 
 /**
  * Class {@code GiftCertificateCriteria} indicates it will be used for filtering or sorting

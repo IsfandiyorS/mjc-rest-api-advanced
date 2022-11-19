@@ -46,14 +46,12 @@ class GiftCertificateServiceImplTest {
     @Spy
     private GiftCertificateMapper giftCertificateMapper = new GiftCertificateMapperImpl(tagMapper);
 
-    private static final PageRequest PAGE_REQUEST = PageRequest.of(0, 5);
-
     @Test
     void getById() {
         when(giftCertificateRepository.findById(CERTIFICATE_ID)).thenReturn(Optional.of(ENTITY));
 
         GiftCertificateDto actualId = service.getById(CERTIFICATE_ID);
-        assertNotNull(actualId);
+        assertEquals(GIFT_CERTIFICATE_DTO, actualId);
         verify(giftCertificateRepository, times(1)).findById(CERTIFICATE_ID);
     }
 
@@ -74,17 +72,17 @@ class GiftCertificateServiceImplTest {
 
         GiftCertificateDto actualDto = service.create(CREATE_DTO);
 
-        assertEquals(CREATED_GIFT_CERTIFICATE.getName(), actualDto.getName());
+        assertEquals(CREATED_GIFT_CERTIFICATE_DTO, actualDto);
         verify(giftCertificateRepository, times(1)).save(any(GiftCertificate.class));
     }
 
     @Test
     void testUpdate() {
         when(giftCertificateRepository.findById(GIFT_CERTIFICATE_UPDATE_DTO.getId())).thenReturn(Optional.of(ENTITY));
-        when(giftCertificateRepository.update(any(GiftCertificate.class))).thenReturn(UPDATED_GIFT_CERTIFICATE);
+        when(giftCertificateRepository.update(any(GiftCertificate.class))).thenReturn(UPDATE_GIFT_CERTIFICATE);
 
         GiftCertificateDto actualDto = service.update(GIFT_CERTIFICATE_UPDATE_DTO);
-        assertEquals(UPDATED_GIFT_CERTIFICATE.getDescription(), actualDto.getDescription());
+        assertEquals(UPDATED_GIFT_CERTIFICATE, actualDto);
         verify(giftCertificateRepository, times(1)).update(any(GiftCertificate.class));
     }
 

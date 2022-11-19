@@ -7,7 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import java.util.List;
 import java.util.Optional;
 
-public interface OrderRepository extends GenericCrudRepository<Order, OrderCriteria>{
+public interface OrderRepository extends GenericCrudRepository<Order, OrderCriteria> {
 
     List<Order> findByUserId(PageRequest pageRequest, Long userId);
 

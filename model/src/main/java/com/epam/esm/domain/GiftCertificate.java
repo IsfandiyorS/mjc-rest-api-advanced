@@ -57,12 +57,12 @@ public class GiftCertificate extends BaseAbstractDomain {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", GiftCertificate.class.getSimpleName() + "[", "]")
-                .add("name='" + name + "'")
-                .add("description='" + description + "'")
-                .add("price=" + price)
-                .add("duration=" + duration)
-                .add("tagList=" + tagList)
-                .toString();
+        return "GiftCertificate{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", duration=" + duration +
+                ", tagList=" + tagList +
+                '}';
     }
 }

@@ -3,7 +3,6 @@ package com.epam.esm.repository.impl;
 import com.epam.esm.creator.QueryCreator;
 import com.epam.esm.criteria.GiftCertificateCriteria;
 import com.epam.esm.domain.GiftCertificate;
-import com.epam.esm.domain.Tag;
 import com.epam.esm.repository.AbstractCrudRepository;
 import com.epam.esm.repository.GiftCertificateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -46,20 +43,9 @@ public class GiftCertificateRepositoryImpl extends AbstractCrudRepository<GiftCe
         }
     }
 
-//    @Transactional
-//    @Override
-//    public void attachTagToGiftCertificate(List<Tag> tagId, Long giftCertificateId) {
-//        tagId.forEach(tag ->
-//                entityManager.createNativeQuery("INSERT INTO gift_certificate_tag(gift_certificate_id, tag_id) VALUES(?1, ?2)")
-//                        .setParameter(1, giftCertificateId)
-//                        .setParameter(2, tag.getId())
-//                        .executeUpdate()
-//        );
-//    }
-
     @Override
     public GiftCertificate update(GiftCertificate update) {
-        if (update == null){
+        if (update == null) {
             return null;
         }
         entityManager.persist(update);

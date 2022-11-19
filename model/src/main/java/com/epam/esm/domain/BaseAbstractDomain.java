@@ -52,12 +52,12 @@ public abstract class BaseAbstractDomain extends Auditable<String> {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", BaseAbstractDomain.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
-                .add("createDate=" + createDate)
-                .add("lastUpdateDate=" + lastUpdateDate)
-                .add("state=" + state)
-                .toString();
+        return "BaseAbstractDomain{" +
+                "id=" + id +
+                ", createDate=" + createDate +
+                ", lastUpdateDate=" + lastUpdateDate +
+                ", state=" + state +
+                '}';
     }
 }
 

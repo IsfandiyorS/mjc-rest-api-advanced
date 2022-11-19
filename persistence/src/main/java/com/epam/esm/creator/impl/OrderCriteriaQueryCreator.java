@@ -42,7 +42,7 @@ public class OrderCriteriaQueryCreator extends AbstractQueryCreator<Order> imple
         return criteriaQuery;
     }
 
-    private Predicate addPredicateFromRelationalField(Object field, CriteriaBuilder criteriaBuilder, Root<Order> orderRoot, String mappingTable, String columnName){
+    private Predicate addPredicateFromRelationalField(Object field, CriteriaBuilder criteriaBuilder, Root<Order> orderRoot, String mappingTable, String columnName) {
         return criteriaBuilder.equal(orderRoot.join(mappingTable).get(columnName), field);
     }
 }

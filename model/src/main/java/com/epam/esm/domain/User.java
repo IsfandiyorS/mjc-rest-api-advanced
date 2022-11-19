@@ -59,14 +59,14 @@ public class User extends BaseAbstractDomain{
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", User.class.getSimpleName() + "[", "]")
-                .add("username='" + username + "'")
-                .add("firstName='" + firstName + "'")
-                .add("lastName='" + lastName + "'")
-                .add("email='" + email + "'")
-                .add("password='" + password + "'")
-                .add("phoneNumber='" + phoneNumber + "'")
-                .add("userType=" + userType)
-                .toString();
+        return "User{" +
+                "username='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", userType=" + userType +
+                '}';
     }
 }

@@ -42,12 +42,12 @@ public abstract class AbstractCrudRepository<T extends BaseAbstractDomain, C ext
 
     public Optional<T> findById(Long id) {
         try {
-            Optional<T> singleResult = Optional.ofNullable(entityManager.createQuery(
+            return Optional.of(
+                    entityManager.createQuery(
                             "SELECT t FROM " + persistentClass.getSimpleName() +
                                     " t WHERE t.id = ?1 and t.state <> 2", persistentClass)
                     .setParameter(1, id)
                     .getSingleResult());
-            return singleResult;
         } catch (NoResultException e) {
             return Optional.empty();
         }

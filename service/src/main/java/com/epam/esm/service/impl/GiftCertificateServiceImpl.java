@@ -43,7 +43,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final GiftCertificateRepository giftCertificateRepository;
     private final TagRepository tagRepository;
     private final GiftCertificateMapper giftCertificateMapper;
-
     private final TagMapper tagMapper;
 
     @Autowired
@@ -85,8 +84,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             }
             giftCertificate.setTagList(tagEntity);
         }
-        GiftCertificate save = giftCertificateRepository.save(giftCertificate);
-        return giftCertificateMapper.toDto(save);
+        return giftCertificateMapper.toDto(giftCertificateRepository.save(giftCertificate));
     }
 
     @Override
@@ -107,8 +105,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             updatedEntity.setTagList(tagCreatedList);
         }
 
-        GiftCertificate updatedCertificate = giftCertificateRepository.update(updatedEntity);
-        return giftCertificateMapper.toDto(updatedCertificate);
+        return giftCertificateMapper.toDto(giftCertificateRepository.update(updatedEntity));
     }
 
     @Override
@@ -122,13 +119,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public List<GiftCertificateDto> doFilter(GiftCertificateCriteria criteria, PageRequest pageable) {
         return giftCertificateMapper.toDtoList(giftCertificateRepository.find(criteria, pageable));
-    }
-
-    @Override
-    public void validate(Optional<GiftCertificate> entity) {
-        if (entity.isEmpty()) {
-            throw new ObjectNotFoundException(format(ErrorCodes.OBJECT_NOT_FOUND_ID.message, "Gift certificate"));
-        }
     }
 
     @Transactional
@@ -167,6 +157,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             tagEntityList.add(tagRepository.findById(savedTag.getId()).get());
         } else {
             tagEntityList.add(optionalTag.get());
+        }
+    }
+
+    @Override
+    public void validate(Optional<GiftCertificate> entity) {
+        if (entity.isEmpty()) {
+            throw new ObjectNotFoundException(format(ErrorCodes.OBJECT_NOT_FOUND_ID.message, "Gift certificate"));
         }
     }
 }

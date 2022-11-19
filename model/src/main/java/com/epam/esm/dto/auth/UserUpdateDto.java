@@ -36,6 +36,6 @@ public class UserUpdateDto extends GenericCrudDto {
     @Size(min = 8, message = "Password length must be more than 8")
     String password;
 
-    @Size(min = 12, message = "Phone number  length must be over than 12")
+    @Size(min = 12, message = "Phone number length must be over than 12. Such as: 998-XX-XXX-XX-XX")
     String phoneNumber;
 }

@@ -59,8 +59,7 @@ public class TagServiceImpl implements TagService {
         if (optionalTag.isPresent()) {
             throw new AlreadyExistException(format(ErrorCodes.OBJECT_ALREADY_EXIST.message));
         }
-        Tag tag = tagMapper.fromCreateDto(createEntity);
-        Tag savedTag = tagRepository.save(tag);
+        Tag savedTag = tagRepository.save(tagMapper.fromCreateDto(createEntity));
         return tagMapper.toDto(savedTag);
     }
 

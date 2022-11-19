@@ -75,7 +75,7 @@ public class UserController {
      * @param updateEntity gift certificate entity, which include information to update with its ID
      * @return ResponseEntity with Boolean which indicate the gift is created
      */
-    @PatchMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<DataResponse<UserDto>> update(@Valid @RequestBody UserUpdateDto updateEntity) {
         UserDto updatedUser = userService.update(updateEntity);
         userHateoasAdder.addLink(updatedUser);

@@ -42,11 +42,11 @@ public class Order extends BaseAbstractDomain {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Order.class.getSimpleName() + "[", "]")
-                .add("price=" + price)
-                .add("orderQuantity=" + orderQuantity)
-                .add("user=" + user)
-                .add("giftCertificate=" + giftCertificate)
-                .toString();
+        return "Order{" +
+                "price=" + price +
+                ", orderQuantity=" + orderQuantity +
+                ", user=" + user +
+                ", giftCertificate=" + giftCertificate +
+                '}';
     }
 }
