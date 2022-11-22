@@ -1,4 +1,4 @@
-package com.epam.esm.exceptions;
+package com.epam.esm.handler;
 
 /**
  * Class {@code AlreadyExistException} used in the case of there is already created entity given by its field.

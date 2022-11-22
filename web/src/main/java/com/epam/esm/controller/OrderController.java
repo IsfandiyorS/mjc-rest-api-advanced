@@ -4,7 +4,7 @@ import com.epam.esm.criteria.OrderCriteria;
 import com.epam.esm.dto.certificate.OrderCreateDto;
 import com.epam.esm.dto.certificate.OrderDto;
 import com.epam.esm.dto.certificate.OrderUpdateDto;
-import com.epam.esm.hateoas.domain.OrderHateoasAdder;
+import com.epam.esm.hateoas.impl.OrderHateoasAdderImpl;
 import com.epam.esm.response.DataResponse;
 import com.epam.esm.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +20,10 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
-    private final OrderHateoasAdder orderHateoasAdder;
+    private final OrderHateoasAdderImpl orderHateoasAdder;
 
     @Autowired
-    public OrderController(OrderService orderService, OrderHateoasAdder orderHateoasAdder) {
+    public OrderController(OrderService orderService, OrderHateoasAdderImpl orderHateoasAdder) {
         this.orderService = orderService;
         this.orderHateoasAdder = orderHateoasAdder;
     }
@@ -113,9 +113,6 @@ public class OrderController {
     public ResponseEntity<DataResponse<Integer>> deleteById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(new DataResponse<>(orderService.delete(id)));
     }
-
-
-    // fixme it is not work
 
     /**
      * Method for getting list of gift certificates from data source by special filter.

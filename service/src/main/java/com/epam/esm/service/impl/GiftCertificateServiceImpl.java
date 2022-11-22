@@ -8,9 +8,8 @@ import com.epam.esm.dto.certificate.GiftCertificateDto;
 import com.epam.esm.dto.certificate.GiftCertificateUpdateDto;
 import com.epam.esm.dto.certificate.TagCreateDto;
 import com.epam.esm.enums.ErrorCodes;
-import com.epam.esm.exceptions.AlreadyExistException;
-import com.epam.esm.exceptions.ObjectNotFoundException;
-import com.epam.esm.exceptions.ValidationException;
+import com.epam.esm.handler.AlreadyExistException;
+import com.epam.esm.handler.ObjectNotFoundException;
 import com.epam.esm.mapper.auth.GiftCertificateMapper;
 import com.epam.esm.mapper.auth.TagMapper;
 import com.epam.esm.repository.GiftCertificateRepository;
@@ -89,11 +88,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificateDto update(GiftCertificateUpdateDto updateEntity) {
-
-        if (updateEntity.getId() == null) {
-            throw new ValidationException(format(ErrorCodes.OBJECT_ID_REQUIRED.message));
-        }
-
         Optional<GiftCertificate> giftCertificate = giftCertificateRepository.findById(updateEntity.getId());
         validate(giftCertificate);
 
@@ -126,13 +120,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (isEmptyList(tagCreateDtoList)) {
             return null;
         }
-        if (isEmptyList(alreadyCreatedTags)) {
-            List<Long> idList = new ArrayList<>();
-            tagCreateDtoList.forEach(tagCreateDto -> idList.add(tagRepository.save(tagMapper.fromCreateDto(tagCreateDto)).getId()));
-
-            idList.forEach(id -> alreadyCreatedTags.add(tagRepository.findById(id).get()));
-            return alreadyCreatedTags;
-        } else {
+        if (!isEmptyList(alreadyCreatedTags)) {
             for (TagCreateDto request : tagCreateDtoList) {
                 boolean isExist = false;
                 for (Tag created : alreadyCreatedTags) {

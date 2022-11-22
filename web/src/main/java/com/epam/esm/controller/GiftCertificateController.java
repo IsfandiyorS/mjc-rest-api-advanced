@@ -4,12 +4,11 @@ import com.epam.esm.criteria.GiftCertificateCriteria;
 import com.epam.esm.dto.certificate.GiftCertificateCreateDto;
 import com.epam.esm.dto.certificate.GiftCertificateDto;
 import com.epam.esm.dto.certificate.GiftCertificateUpdateDto;
-import com.epam.esm.hateoas.domain.GiftCertificateHateoasAdder;
+import com.epam.esm.hateoas.impl.GiftCertificateHateoasAdderImpl;
 import com.epam.esm.response.DataResponse;
 import com.epam.esm.service.impl.GiftCertificateServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,10 +30,10 @@ import java.util.List;
 public class GiftCertificateController {
 
     private final GiftCertificateServiceImpl giftCertificateService;
-    private final GiftCertificateHateoasAdder giftCertificateHateoasAdder;
+    private final GiftCertificateHateoasAdderImpl giftCertificateHateoasAdder;
 
     @Autowired
-    public GiftCertificateController(GiftCertificateServiceImpl giftCertificateService, GiftCertificateHateoasAdder giftCertificateHateoasAdder) {
+    public GiftCertificateController(GiftCertificateServiceImpl giftCertificateService, GiftCertificateHateoasAdderImpl giftCertificateHateoasAdder) {
         this.giftCertificateService = giftCertificateService;
         this.giftCertificateHateoasAdder = giftCertificateHateoasAdder;
     }

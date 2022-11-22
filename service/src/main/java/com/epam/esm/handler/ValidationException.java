@@ -1,4 +1,4 @@
-package com.epam.esm.exceptions;
+package com.epam.esm.handler;
 
 /**
  * Class {@code ValidationException} used in the case of which given parameters of object is not correct.

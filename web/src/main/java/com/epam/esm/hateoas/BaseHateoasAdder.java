@@ -1,10 +1,8 @@
 package com.epam.esm.hateoas;
 
-import org.springframework.hateoas.RepresentationModel;
-
 import java.util.List;
 
-public interface BaseHateoasAdder<D extends RepresentationModel<D>> {
+public interface BaseHateoasAdder<D> {
 
     void addLink(D domainDto);
 

@@ -1,4 +1,4 @@
-package com.epam.esm.exceptions;
+package com.epam.esm.handler;
 
 import com.epam.esm.enums.ErrorCodes;
 import com.epam.esm.response.ExceptionResponse;

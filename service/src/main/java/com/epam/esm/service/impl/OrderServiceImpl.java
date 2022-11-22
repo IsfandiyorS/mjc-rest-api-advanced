@@ -7,7 +7,7 @@ import com.epam.esm.domain.User;
 import com.epam.esm.dto.certificate.OrderCreateDto;
 import com.epam.esm.dto.certificate.OrderDto;
 import com.epam.esm.dto.certificate.OrderUpdateDto;
-import com.epam.esm.exceptions.ObjectNotFoundException;
+import com.epam.esm.handler.ObjectNotFoundException;
 import com.epam.esm.mapper.auth.OrderMapper;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.OrderRepository;
@@ -64,7 +64,7 @@ public class OrderServiceImpl implements OrderService {
 
         Optional<GiftCertificate> optionalGiftCertificate = giftCertificateRepository.findById(createEntity.getGiftCertificateId());
         if (optionalGiftCertificate.isEmpty()) {
-            throw new ObjectNotFoundException(format(OBJECT_NOT_FOUND.message, createEntity.getGiftCertificateId()));
+            throw new ObjectNotFoundException(format(OBJECT_NOT_FOUND_ID.message, "Gift Certificate", createEntity.getGiftCertificateId()));
         }
 
         Order order = orderMapper.fromCreateDto(createEntity);
@@ -120,14 +120,10 @@ public class OrderServiceImpl implements OrderService {
         }
 
         Optional<Order> order = orderRepository.findOrderByIdAndUserId(orderId, userId);
-        if (order.isPresent()) {
-            return orderMapper.toDto(order.get());
-        } else {
-            throw new ObjectNotFoundException(format(OBJECT_NOT_FOUND.message, "Order"));
-        }
+        validate(order);
+        return orderMapper.toDto(order.get());
     }
 
-    // fixme to if I try to search by username;
     @Override
     public List<OrderDto> doFilter(OrderCriteria criteria, PageRequest pageable) {
         List<Order> orderList = orderRepository.find(criteria, pageable);

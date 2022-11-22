@@ -1,10 +1,8 @@
-package com.epam.esm.hateoas.domain.impl;
+package com.epam.esm.hateoas.impl;
 
 import com.epam.esm.controller.OrderController;
 import com.epam.esm.dto.certificate.OrderDto;
-import com.epam.esm.hateoas.domain.GiftCertificateHateoasAdder;
-import com.epam.esm.hateoas.domain.OrderHateoasAdder;
-import com.epam.esm.hateoas.domain.UserHateoasAdder;
+import com.epam.esm.hateoas.BaseHateoasAdder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,14 +13,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class OrderHateoasAdderImpl implements OrderHateoasAdder {
+public class OrderHateoasAdderImpl implements BaseHateoasAdder<OrderDto> {
 
     private static final Class<OrderController> CONTROLLER_CLASS = OrderController.class;
-    private final UserHateoasAdder userHateoasAdder;
-    private final GiftCertificateHateoasAdder giftCertificateHateoasAdder;
+    private final UserHateoasAdderImpl userHateoasAdder;
+    private final GiftCertificateHateoasAdderImpl giftCertificateHateoasAdder;
 
     @Autowired
-    public OrderHateoasAdderImpl(UserHateoasAdder userHateoasAdder, GiftCertificateHateoasAdder giftCertificateHateoasAdder) {
+    public OrderHateoasAdderImpl(UserHateoasAdderImpl userHateoasAdder, GiftCertificateHateoasAdderImpl giftCertificateHateoasAdder) {
         this.userHateoasAdder = userHateoasAdder;
         this.giftCertificateHateoasAdder = giftCertificateHateoasAdder;
     }

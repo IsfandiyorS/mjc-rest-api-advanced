@@ -2,12 +2,10 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.domain.User;
 import com.epam.esm.dto.auth.UserDto;
-import com.epam.esm.exceptions.AlreadyExistException;
-import com.epam.esm.exceptions.ObjectNotFoundException;
+import com.epam.esm.handler.AlreadyExistException;
+import com.epam.esm.handler.ObjectNotFoundException;
 import com.epam.esm.mapper.auth.UserMapper;
 import com.epam.esm.repository.UserRepository;
-import com.epam.esm.service.impl.model.UserModel;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
@@ -19,11 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static com.epam.esm.service.impl.model.GiftCertificateModel.CERTIFICATE_ID;
-import static com.epam.esm.service.impl.model.GiftCertificateModel.ENTITY;
 import static com.epam.esm.service.impl.model.UserModel.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

@@ -2,7 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.domain.Order;
 import com.epam.esm.dto.certificate.OrderDto;
-import com.epam.esm.exceptions.ObjectNotFoundException;
+import com.epam.esm.handler.ObjectNotFoundException;
 import com.epam.esm.mapper.auth.*;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.OrderRepository;

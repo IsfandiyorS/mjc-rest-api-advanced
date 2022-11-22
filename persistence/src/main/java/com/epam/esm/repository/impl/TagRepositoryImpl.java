@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +20,7 @@ import java.util.Optional;
  * @version 1.0
  */
 @Repository
-public class TagRepositoryImpl extends AbstractCrudRepository<Tag, TagCriteria> implements TagRepository {
+public class TagRepositoryImpl extends AbstractCrudRepository<Tag, TagCriteria> implements TagRepository{
     private final EntityManager entityManager;
 
     private static final String FIND_MOST_WIDELY_USED_TAG_OF_USER_WITH_HIGHEST_COST_OF_ALL_ORDERS_QUERY = """
@@ -40,20 +39,18 @@ public class TagRepositoryImpl extends AbstractCrudRepository<Tag, TagCriteria> 
 
     @Override
     public Optional<Tag> findByName(String name) {
-        try {
-            return Optional.of(entityManager.createQuery(
-                            "SELECT t FROM Tag as t WHERE t.name = ?1 and t.state <>2", Tag.class)
-                    .setParameter(1, name)
-                    .getSingleResult());
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
+        return entityManager.createQuery(
+                        "SELECT t FROM Tag as t WHERE t.name = ?1", Tag.class)
+                .setParameter(1, name)
+                .getResultList().stream().findFirst();
     }
 
     @Override
     public List<Tag> findMostPopular() {
-        return entityManager.createQuery(FIND_MOST_WIDELY_USED_TAG_OF_USER_WITH_HIGHEST_COST_OF_ALL_ORDERS_QUERY,
-                Tag.class).getResultList();
+        return entityManager.createQuery(
+                        FIND_MOST_WIDELY_USED_TAG_OF_USER_WITH_HIGHEST_COST_OF_ALL_ORDERS_QUERY,
+                        Tag.class)
+                .getResultList();
     }
 
 }

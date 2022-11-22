@@ -1,8 +1,8 @@
-package com.epam.esm.hateoas.domain.impl;
+package com.epam.esm.hateoas.impl;
 
 import com.epam.esm.controller.TagController;
 import com.epam.esm.dto.certificate.TagDto;
-import com.epam.esm.hateoas.domain.TagHateoasAdder;
+import com.epam.esm.hateoas.BaseHateoasAdder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class TagHateoasAdderImpl implements TagHateoasAdder {
+public class TagHateoasAdderImpl implements BaseHateoasAdder<TagDto> {
 
     private static final Class<TagController> CONTROLLER_CLASS = TagController.class;
 

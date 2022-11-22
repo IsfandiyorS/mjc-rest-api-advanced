@@ -2,14 +2,13 @@ package com.epam.esm.domain;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.aspectj.weaver.ast.Or;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.StringJoiner;
 
-import static lombok.AccessLevel.*;
+import static lombok.AccessLevel.PRIVATE;
 
 /**
  * Abstract class {@code GiftCertificate} represents gift certificate entity.
@@ -19,9 +18,9 @@ import static lombok.AccessLevel.*;
  */
 
 @Entity
-@Getter
-@Setter
+@Data
 @Builder
+@Where(clause = "state <> 2")
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -42,7 +41,7 @@ public class GiftCertificate extends BaseAbstractDomain {
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "gift_certificate_tag",
-            joinColumns = @JoinColumn(name = "gift_certificate_id", referencedColumnName="id"),
+            joinColumns = @JoinColumn(name = "gift_certificate_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
     List<Tag> tagList;
 

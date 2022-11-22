@@ -1,7 +1,10 @@
 package com.epam.esm.dto.certificate;
 
 import com.epam.esm.dto.GenericCrudDto;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.DecimalMin;
@@ -15,11 +18,10 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Data
 @Builder
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class GiftCertificateUpdateDto extends GenericCrudDto {
+public class GiftCertificateUpdateDto implements GenericCrudDto {
 
     @NotNull(message = "Gift Certificate id must be valid")
     Long id;
@@ -28,8 +30,7 @@ public class GiftCertificateUpdateDto extends GenericCrudDto {
 
     String description;
 
-    @DecimalMin(value = "0.0", message = "Enter correct price")
-    @Positive(message = "Price must be positive number")
+    @Positive(message = "Gift certificate price should be positive")
     BigDecimal price;
 
     @Min(value = 1, message = "Gift certificate duration should be more or equals to 1")

@@ -8,7 +8,6 @@ import com.epam.esm.dto.certificate.OrderUpdateDto;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface OrderService extends GenericCrudService<Order, OrderCreateDto, OrderUpdateDto, OrderDto, Long, OrderCriteria> {
 

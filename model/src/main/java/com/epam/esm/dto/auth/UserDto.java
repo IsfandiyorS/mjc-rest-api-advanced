@@ -8,9 +8,11 @@ import org.springframework.hateoas.RepresentationModel;
 
 import static lombok.AccessLevel.PRIVATE;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 @Builder
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @FieldDefaults(level = PRIVATE)
 public class UserDto extends RepresentationModel<UserDto> implements GenericDto {
@@ -29,14 +31,5 @@ public class UserDto extends RepresentationModel<UserDto> implements GenericDto 
 
     UserType userType;
 
-    @Builder(builderMethodName = "userDtoBuilder")
-    public UserDto(Long id, String username, String firstName, String lastName, String email, String phoneNumber, UserType userType) {
-        this.id = id;
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.userType = userType;
-    }
 }
+

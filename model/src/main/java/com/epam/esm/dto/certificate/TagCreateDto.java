@@ -10,11 +10,10 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Data
 @Builder
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class TagCreateDto extends GenericCrudDto {
+public class TagCreateDto implements GenericCrudDto {
 
     @NotBlank(message = "Tag name should be correct")
     String name;

@@ -4,7 +4,7 @@ import com.epam.esm.criteria.UserCriteria;
 import com.epam.esm.dto.auth.UserCreateDto;
 import com.epam.esm.dto.auth.UserDto;
 import com.epam.esm.dto.auth.UserUpdateDto;
-import com.epam.esm.hateoas.domain.impl.UserHateoasAdderImpl;
+import com.epam.esm.hateoas.impl.UserHateoasAdderImpl;
 import com.epam.esm.response.DataResponse;
 import com.epam.esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

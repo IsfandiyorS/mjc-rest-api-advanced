@@ -1,5 +1,10 @@
 package com.epam.esm.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 /**
@@ -9,34 +14,19 @@ import java.time.LocalDateTime;
  * @author Sultonov Isfandiyor
  * @version 1.0
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ExceptionResponse {
     private int errorCode;
     private String errorMessage;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime time = LocalDateTime.now();
 
     public ExceptionResponse(int errorCode, String errorMessage) {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
-    }
-
-    public int getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(int errorCode) {
-        this.errorCode = errorCode;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
-    public String getTime() {
-        return time.toString();
     }
 
 }

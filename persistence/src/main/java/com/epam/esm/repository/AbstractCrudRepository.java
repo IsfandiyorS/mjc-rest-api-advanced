@@ -9,9 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
@@ -36,28 +34,21 @@ public abstract class AbstractCrudRepository<T extends BaseAbstractDomain, C ext
             return null;
         }
         entityManager.persist(entity);
-        entityManager.flush();
         return entity;
     }
 
     public Optional<T> findById(Long id) {
-        try {
-            return Optional.of(
-                    entityManager.createQuery(
-                            "SELECT t FROM " + persistentClass.getSimpleName() +
-                                    " t WHERE t.id = ?1 and t.state <> 2", persistentClass)
-                    .setParameter(1, id)
-                    .getSingleResult());
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(
+                entityManager.find(persistentClass, id)
+        );
     }
 
     public List<T> findAll(PageRequest pageRequest) {
         int startedNumber = pageRequest.getPageNumber() * pageRequest.getPageSize();
+
         return entityManager.createQuery(
                         "SELECT t FROM " + persistentClass.getSimpleName()
-                                + " t WHERE t.state <> 2 ORDER BY t.id asc", persistentClass)
+                                + " t ORDER BY t.id asc", persistentClass)
                 .setFirstResult(startedNumber)
                 .setMaxResults(pageRequest.getPageSize())
                 .getResultList();
@@ -72,11 +63,6 @@ public abstract class AbstractCrudRepository<T extends BaseAbstractDomain, C ext
                 .setFirstResult(startedNumber)
                 .setMaxResults(pageable.getPageSize())
                 .getResultList();
-    }
-
-    public Query createQuery(StringBuilder queryBuilder) {
-        return entityManager.createQuery("SELECT t FROM " + persistentClass.getSimpleName() +
-                " t WHERE t.state <> 2 " + queryBuilder.toString(), persistentClass);
     }
 
     @Transactional

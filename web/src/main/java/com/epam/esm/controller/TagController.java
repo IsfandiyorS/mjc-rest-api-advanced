@@ -3,7 +3,7 @@ package com.epam.esm.controller;
 import com.epam.esm.criteria.TagCriteria;
 import com.epam.esm.dto.certificate.TagCreateDto;
 import com.epam.esm.dto.certificate.TagDto;
-import com.epam.esm.hateoas.domain.TagHateoasAdder;
+import com.epam.esm.hateoas.impl.TagHateoasAdderImpl;
 import com.epam.esm.response.DataResponse;
 import com.epam.esm.service.impl.TagServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +28,10 @@ import java.util.List;
 public class TagController {
 
     private final TagServiceImpl tagService;
-    private final TagHateoasAdder tagHateoasAdder;
+    private final TagHateoasAdderImpl tagHateoasAdder;
 
     @Autowired
-    public TagController(TagServiceImpl tagService, TagHateoasAdder tagHateoasAdder) {
+    public TagController(TagServiceImpl tagService, TagHateoasAdderImpl tagHateoasAdder) {
         this.tagService = tagService;
         this.tagHateoasAdder = tagHateoasAdder;
     }
@@ -82,7 +82,6 @@ public class TagController {
      * @param id ID of tag to remove
      * @return ResponseEntity with Boolean body
      */
-    // fixme dataResponse return null on data field
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<DataResponse<Integer>> deleteById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(new DataResponse<>(tagService.delete(id)));
@@ -105,7 +104,7 @@ public class TagController {
     }
 
     @GetMapping("/most_popular")
-    public ResponseEntity<DataResponse<List<TagDto>>> findMostPopular(){
+    public ResponseEntity<DataResponse<List<TagDto>>> findMostPopular() {
         List<TagDto> certificateDtoList = tagService.findMostTags();
         tagHateoasAdder.addLink(certificateDtoList);
         return ResponseEntity.ok(new DataResponse<>(certificateDtoList));

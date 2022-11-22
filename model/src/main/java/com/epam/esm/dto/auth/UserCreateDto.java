@@ -1,7 +1,10 @@
 package com.epam.esm.dto.auth;
 
 import com.epam.esm.dto.GenericCrudDto;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.Email;
@@ -12,11 +15,10 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Data
 @Builder
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class UserCreateDto extends GenericCrudDto {
+public class UserCreateDto implements GenericCrudDto {
 
     @NotBlank(message = "Username should be valid")
     @Size(min = 4, message = "Username length must be more than 4")

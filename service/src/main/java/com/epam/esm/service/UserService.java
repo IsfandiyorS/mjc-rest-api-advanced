@@ -6,5 +6,5 @@ import com.epam.esm.dto.auth.UserCreateDto;
 import com.epam.esm.dto.auth.UserDto;
 import com.epam.esm.dto.auth.UserUpdateDto;
 
-public interface UserService extends GenericCrudService<User, UserCreateDto, UserUpdateDto, UserDto, Long, UserCriteria>{
+public interface UserService extends GenericCrudService<User, UserCreateDto, UserUpdateDto, UserDto, Long, UserCriteria> {
 }

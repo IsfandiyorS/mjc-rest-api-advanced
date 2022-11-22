@@ -7,18 +7,20 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
 
-@Data
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @FieldDefaults(level = PRIVATE)
 public class OrderDto extends RepresentationModel<OrderDto> implements GenericDto {
 
     Long id;
+
     BigDecimal price;
 
     Long orderQuantity;
@@ -29,14 +31,4 @@ public class OrderDto extends RepresentationModel<OrderDto> implements GenericDt
 
     GiftCertificateDto giftCertificateDto;
 
-    @Builder(builderMethodName = "orderBuilder")
-    public OrderDto(Long id, BigDecimal price, Long orderQuantity, UserDto userDto,
-                    GiftCertificateDto giftCertificateDto, String orderedTime) {
-        this.id = id;
-        this.price = price;
-        this.orderQuantity = orderQuantity;
-        this.userDto = userDto;
-        this.giftCertificateDto = giftCertificateDto;
-        this.orderedTime = orderedTime;
-    }
 }

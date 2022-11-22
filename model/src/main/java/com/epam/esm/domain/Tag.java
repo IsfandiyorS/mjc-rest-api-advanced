@@ -2,12 +2,11 @@ package com.epam.esm.domain;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
 
-import java.util.StringJoiner;
-
-import static lombok.AccessLevel.*;
+import static lombok.AccessLevel.PRIVATE;
 
 /**
  * Abstract class {@code Tag} represents tag entity.
@@ -16,9 +15,9 @@ import static lombok.AccessLevel.*;
  * @version 1.0
  */
 @Entity
-@Getter
-@Setter
+@Data
 @Builder
+@Where(clause = "state <> 2")
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor

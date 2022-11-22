@@ -27,7 +27,7 @@ public class UserRepositoryImpl extends AbstractCrudRepository<User, UserCriteri
     public Optional<User> findByUsername(String username) {
         try {
             return Optional.of(entityManager.createQuery(
-                            "SELECT t FROM User t WHERE t.state <> 2 and t.username = ?1",
+                            "SELECT t FROM User t WHERE t.username = ?1",
                             User.class)
                     .setParameter(1, username).getSingleResult());
         } catch (NoResultException e) {
@@ -37,26 +37,22 @@ public class UserRepositoryImpl extends AbstractCrudRepository<User, UserCriteri
 
     @Override
     public Optional<User> findByEmail(String email) {
-        try {
-            return Optional.of(entityManager.createQuery(
-                            "SELECT t FROM User t WHERE t.state <> 2 and t.email = ?1",
-                            User.class)
-                    .setParameter(1, email).getSingleResult());
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
+        return entityManager.createQuery(
+                        "SELECT t FROM User t WHERE t.email = ?1",
+                        User.class)
+                .setParameter(1, email)
+                .getResultList()
+                .stream().findFirst();
     }
 
     @Override
     public Optional<User> findByPhoneNumber(String phoneNumber) {
-        try {
-            return Optional.of(entityManager.createQuery(
-                            "SELECT t FROM User  t WHERE t.state <> 2 and t.phoneNumber = ?1",
-                            User.class)
-                    .setParameter(1, phoneNumber).getSingleResult());
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
+        return entityManager.createQuery(
+                        "SELECT t FROM User  t WHERE t.phoneNumber = ?1",
+                        User.class)
+                .setParameter(1, phoneNumber)
+                .getResultList()
+                .stream().findFirst();
     }
 
 }

@@ -2,7 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.domain.Tag;
 import com.epam.esm.dto.certificate.TagDto;
-import com.epam.esm.exceptions.ObjectNotFoundException;
+import com.epam.esm.handler.ObjectNotFoundException;
 import com.epam.esm.mapper.auth.TagMapper;
 import com.epam.esm.repository.TagRepository;
 import org.junit.jupiter.api.Test;

@@ -14,11 +14,10 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Data
 @Builder
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class UserUpdateDto extends GenericCrudDto {
+public class UserUpdateDto implements GenericCrudDto {
 
     @NotNull(message = "User id must be valid")
     Long id;

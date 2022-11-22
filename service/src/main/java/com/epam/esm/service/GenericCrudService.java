@@ -51,7 +51,9 @@ public interface GenericCrudService<T extends BaseAbstractDomain, CD, UD extends
      *
      * @param updateEntity request parameters from url
      */
-    default D update(UD updateEntity) {return null;}
+    default D update(UD updateEntity) {
+        return null;
+    }
 
     /**
      * Method for deleting object or entity by its ID.

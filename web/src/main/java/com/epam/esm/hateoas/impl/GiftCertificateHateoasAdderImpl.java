@@ -1,9 +1,8 @@
-package com.epam.esm.hateoas.domain.impl;
+package com.epam.esm.hateoas.impl;
 
 import com.epam.esm.controller.GiftCertificateController;
 import com.epam.esm.dto.certificate.GiftCertificateDto;
-import com.epam.esm.hateoas.domain.GiftCertificateHateoasAdder;
-import com.epam.esm.hateoas.domain.TagHateoasAdder;
+import com.epam.esm.hateoas.BaseHateoasAdder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,13 +13,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class GiftCertificateHateoasAdderImpl implements GiftCertificateHateoasAdder {
+public class GiftCertificateHateoasAdderImpl implements BaseHateoasAdder<GiftCertificateDto> {
 
     private static final Class<GiftCertificateController> CERTIFICATE_CONTROLLER_CLASS = GiftCertificateController.class;
-    private final TagHateoasAdder tagHateoasAdder;
+    private final TagHateoasAdderImpl tagHateoasAdder;
 
     @Autowired
-    public GiftCertificateHateoasAdderImpl(TagHateoasAdder tagHateoasAdder) {
+    public GiftCertificateHateoasAdderImpl(TagHateoasAdderImpl tagHateoasAdder) {
         this.tagHateoasAdder = tagHateoasAdder;
     }
 
@@ -29,7 +28,9 @@ public class GiftCertificateHateoasAdderImpl implements GiftCertificateHateoasAd
         giftCertificateDto.add(linkTo(methodOn(CERTIFICATE_CONTROLLER_CLASS).getById(giftCertificateDto.getId())).withSelfRel());
         giftCertificateDto.add(linkTo(methodOn(CERTIFICATE_CONTROLLER_CLASS).getAll(PAGE_NUMBER, PAGE_SIZE)).withRel(GET_ALL_METHOD));
         giftCertificateDto.add(linkTo(methodOn(CERTIFICATE_CONTROLLER_CLASS).deleteById(giftCertificateDto.getId())).withRel(DELETE_BY_ID_METHOD));
-        tagHateoasAdder.addLink(giftCertificateDto.getTagDtoList());
+        if (giftCertificateDto.getTagDtoList() != null) {
+            tagHateoasAdder.addLink(giftCertificateDto.getTagDtoList());
+        }
     }
 
     @Override

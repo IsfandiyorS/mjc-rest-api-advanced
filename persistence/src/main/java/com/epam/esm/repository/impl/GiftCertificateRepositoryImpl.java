@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import java.util.Optional;
 
 /**
@@ -31,24 +30,13 @@ public class GiftCertificateRepositoryImpl extends AbstractCrudRepository<GiftCe
 
     @Override
     public Optional<GiftCertificate> findByName(String name) {
-        try {
-            return Optional.of(
-                    entityManager.createQuery(
-                                    "SELECT t FROM GiftCertificate as t WHERE t.name = ?1 and t.state <> 2",
-                                    GiftCertificate.class)
-                            .setParameter(1, name)
-                            .getSingleResult());
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
+        return entityManager.createQuery(
+                        "SELECT t FROM GiftCertificate as t WHERE t.name = ?1",
+                        GiftCertificate.class)
+                .setParameter(1, name)
+                .getResultList().stream().findFirst();
+
     }
 
-    @Override
-    public GiftCertificate update(GiftCertificate update) {
-        if (update == null) {
-            return null;
-        }
-        entityManager.persist(update);
-        return update;
-    }
+
 }
