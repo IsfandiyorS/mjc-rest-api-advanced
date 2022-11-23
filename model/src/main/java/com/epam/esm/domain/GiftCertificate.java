@@ -25,7 +25,7 @@ import static lombok.AccessLevel.PRIVATE;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class GiftCertificate extends BaseAbstractDomain {
+public class GiftCertificate extends Auditable {
 
     String name;
 

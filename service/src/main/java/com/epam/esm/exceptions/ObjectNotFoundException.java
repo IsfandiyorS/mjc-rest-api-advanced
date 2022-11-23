@@ -1,4 +1,4 @@
-package com.epam.esm.handler;
+package com.epam.esm.exceptions;
 
 /**
  * Class {@code ObjectNotFoundException} used in the case of there will not find object by given field.

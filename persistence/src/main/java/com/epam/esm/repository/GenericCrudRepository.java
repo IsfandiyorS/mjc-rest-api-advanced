@@ -1,7 +1,7 @@
 package com.epam.esm.repository;
 
 import com.epam.esm.criteria.Criteria;
-import com.epam.esm.domain.BaseAbstractDomain;
+import com.epam.esm.domain.Auditable;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.Optional;
  * @author Sultonov Isfandiyor
  * @version 1.0
  */
-public interface GenericCrudRepository<T extends BaseAbstractDomain, C extends Criteria> {
+public interface GenericCrudRepository<T extends Auditable, C extends Criteria> {
 
     /**
      * Method for saving an entity to a table.

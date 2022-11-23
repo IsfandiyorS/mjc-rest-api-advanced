@@ -9,10 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Repository
+@Transactional
 public class UserRepositoryImpl extends AbstractCrudRepository<User, UserCriteria> implements UserRepository {
 
     private final EntityManager entityManager;
@@ -25,14 +26,11 @@ public class UserRepositoryImpl extends AbstractCrudRepository<User, UserCriteri
 
     @Override
     public Optional<User> findByUsername(String username) {
-        try {
-            return Optional.of(entityManager.createQuery(
-                            "SELECT t FROM User t WHERE t.username = ?1",
-                            User.class)
-                    .setParameter(1, username).getSingleResult());
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
+        return entityManager.createQuery(
+                        "SELECT t FROM User t WHERE t.username = ?1",
+                        User.class)
+                .setParameter(1, username)
+                .getResultList().stream().findFirst();
     }
 
     @Override
@@ -54,5 +52,4 @@ public class UserRepositoryImpl extends AbstractCrudRepository<User, UserCriteri
                 .getResultList()
                 .stream().findFirst();
     }
-
 }

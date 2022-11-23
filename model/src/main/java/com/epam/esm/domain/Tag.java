@@ -22,7 +22,7 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class Tag extends BaseAbstractDomain {
+public class Tag extends Auditable {
     String name;
 
     public Tag(Long id, String name) {

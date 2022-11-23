@@ -5,8 +5,8 @@ import com.epam.esm.domain.Tag;
 import com.epam.esm.dto.certificate.TagCreateDto;
 import com.epam.esm.dto.certificate.TagDto;
 import com.epam.esm.enums.ErrorCodes;
-import com.epam.esm.handler.AlreadyExistException;
-import com.epam.esm.handler.ObjectNotFoundException;
+import com.epam.esm.exceptions.AlreadyExistException;
+import com.epam.esm.exceptions.ObjectNotFoundException;
 import com.epam.esm.mapper.auth.TagMapper;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.TagService;
@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.epam.esm.constant.TagColumn.NAME;
+import static com.epam.esm.constant.TagColumn.TAG;
 import static java.lang.String.format;
 
 /**
@@ -56,18 +58,19 @@ public class TagServiceImpl implements TagService {
     public TagDto create(TagCreateDto createEntity) {
         Optional<Tag> optionalTag = tagRepository.findByName(createEntity.getName());
         if (optionalTag.isPresent()) {
-            throw new AlreadyExistException(format(ErrorCodes.OBJECT_ALREADY_EXIST.message));
+            throw new AlreadyExistException(format(ErrorCodes.OBJECT_ALREADY_EXIST.message, TAG, NAME));
         }
         Tag savedTag = tagRepository.save(tagMapper.fromCreateDto(createEntity));
         return tagMapper.toDto(savedTag);
     }
-
+    // fixme create Enum for state or final for  1 or 0
     @Override
     public int delete(Long id) {
         Optional<Tag> optionalTag = tagRepository.findById(id);
         validate(optionalTag);
-        Long deleteId = tagRepository.delete(optionalTag.get());
-        return Objects.equals(optionalTag.get().getId(), deleteId) ? 1 : 0;
+        Long deleteState = tagRepository.delete(optionalTag.get());
+
+        return deleteState == 2 ?1:0;
     }
 
     @Override
@@ -82,7 +85,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public void validate(Optional<Tag> entity) {
         if (entity.isEmpty()) {
-            throw new ObjectNotFoundException(format(ErrorCodes.OBJECT_NOT_FOUND_ID.message, "Tag"));
+            throw new ObjectNotFoundException(format(ErrorCodes.OBJECT_NOT_FOUND_ID.message, TAG));
         }
     }
 

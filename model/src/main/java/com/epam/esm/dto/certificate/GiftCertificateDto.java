@@ -19,6 +19,7 @@ import static lombok.AccessLevel.PRIVATE;
 public class GiftCertificateDto extends RepresentationModel<GiftCertificateDto> implements GenericDto {
 
     Long id;
+
     String name;
 
     String description;

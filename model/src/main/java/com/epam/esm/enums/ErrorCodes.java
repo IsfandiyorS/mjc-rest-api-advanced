@@ -8,23 +8,15 @@ package com.epam.esm.enums;
  */
 public enum ErrorCodes {
 
-    ERROR_MESSAGE_NOT_FOUND("ERROR_MESSAGE_NOT_FOUND", "Error message with code not found"),
-    OBJECT_ALREADY_EXIST("OBJECT_ALREADY_EXIST", "Object by this name already exist"),
+    OBJECT_ALREADY_EXIST("OBJECT_ALREADY_EXIST", "%s by this %s already exist"),
     OBJECT_NOT_FOUND_BY_FIELD("OBJECT_NOT_FOUND_BY_FIELD", "Object by this %s not found"),
-    OBJECT_NOT_FOUND("OBJECT_NOT_FOUND", "Object not found"),
+    OBJECT_NOT_FOUND("OBJECT_NOT_FOUND", "%s not found"),
     OBJECT_NOT_FOUND_ID("OBJECT_NOT_FOUND_ID", "%s is not found with provided id"),
-    OBJECT_IS_DELETED("OBJECT_IS_DELETED", "Object with provided id is deleted"),
-    OBJECT_IS_NULL("OBJECT_IS_NULL", "Provided object %s is null"),
-    OBJECT_NOT_NULL("OBJECT_NOT_NULL", "Provided object is not null"),
     OBJECT_ID_REQUIRED("OBJECT_ID_REQUIRED", "Object id not provided"),
-    OBJECT_GIVEN_FIELD_REQUIRED("OBJECT_GIVEN_FIELD_REQUIRED", "Provided field is required"),
-    OBJECT_SHOULD_BE("OBJECT_SHOULD_BE", "Provider object: %s should be %s"),
-    FIELD_LENGTH_SHOULD_BE("FIELD_LENGTH_SHOULD_BE", "%s length should be between %s and %s"),
+
     METHOD_NOT_ALLOWED("METHOD_NOT_ALLOWED", "Method not allowed"),
-    FIELD_IN_CORRECT("FIELD_IN_CORRECT", "Provided %s field was written incorrect"),
-    ACTION_FALL("ACTION_FALL", "Object %s action fall"),
-    USER_NOT_FOUND("USER_NOT_FOUND", "User by this %s not found"),
-    USER_ALREADY_EXIST_BY_FIELD("USER_ALREADY_EXIST_BY_FIELD", "Provided user's %s already exist");
+    NO_HANDLER_FOUND("NO_HANDLER_FOUND", "No handler found"),
+    INVALID_REQUEST_PARAMETER("INVALID_REQUEST_PARAMETER", "Invalid request parameters");
 
     public final String code;
     public final String message;

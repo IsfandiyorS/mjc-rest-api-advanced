@@ -11,10 +11,12 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Transactional
 public class OrderRepositoryImpl extends AbstractCrudRepository<Order, OrderCriteria> implements OrderRepository {
     private final EntityManager entityManager;
     private static final String ORDER_BY_USER_ID_SELF_ID = """
@@ -33,15 +35,11 @@ public class OrderRepositoryImpl extends AbstractCrudRepository<Order, OrderCrit
 
     @Override
     public List<Order> findByUserId(PageRequest pageRequest, Long userId) {
-//        try {
         return entityManager.createQuery("SELECT t FROM Order t WHERE t.user.id = ?1", Order.class)
                 .setParameter(1, userId)
                 .setFirstResult(pageRequest.getPageNumber())
                 .setMaxResults(pageRequest.getPageSize())
                 .getResultList();
-//        } catch (NoResultException e) {
-//            return null;
-//        }
     }
 
     @Override

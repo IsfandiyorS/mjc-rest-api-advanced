@@ -23,7 +23,7 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class Order extends BaseAbstractDomain {
+public class Order extends Auditable {
 
     BigDecimal price;
 

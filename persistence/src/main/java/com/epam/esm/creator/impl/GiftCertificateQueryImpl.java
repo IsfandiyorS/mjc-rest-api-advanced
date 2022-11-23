@@ -21,7 +21,8 @@ import static com.epam.esm.constant.GiftCertificateColumn.*;
 public class GiftCertificateQueryImpl extends AbstractQueryCreator<GiftCertificate> implements QueryCreator<GiftCertificate, GiftCertificateCriteria> {
 
     @Override
-    public CriteriaQuery<GiftCertificate> createGetQuery(GiftCertificateCriteria giftCertificateCriteria, CriteriaBuilder criteriaBuilder, Class<GiftCertificate> persistentClass) {
+    public CriteriaQuery<GiftCertificate> createGetQuery(GiftCertificateCriteria giftCertificateCriteria, CriteriaBuilder criteriaBuilder,
+                                                         Class<GiftCertificate> persistentClass) {
         CriteriaQuery<GiftCertificate> criteriaQuery = criteriaBuilder.createQuery(persistentClass);
         Root<GiftCertificate> giftCertificateRoot = criteriaQuery.from(persistentClass);
         List<Predicate> restrictions = new ArrayList<>();

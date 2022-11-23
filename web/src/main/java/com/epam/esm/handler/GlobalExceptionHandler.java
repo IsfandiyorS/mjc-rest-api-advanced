@@ -1,5 +1,7 @@
 package com.epam.esm.handler;
 
+import com.epam.esm.exceptions.AlreadyExistException;
+import com.epam.esm.exceptions.ObjectNotFoundException;
 import com.epam.esm.enums.ErrorCodes;
 import com.epam.esm.response.ExceptionResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.epam.esm.enums.ErrorCodes.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -36,7 +39,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoHandlerFoundException.class)
     protected ResponseEntity<Object> handleNoHandlerFoundException() {
         return new ResponseEntity<>(
-                new ExceptionResponse(NOT_FOUND.value(), "No handler found"),
+                new ExceptionResponse(NOT_FOUND.value(), NO_HANDLER_FOUND.message),
                 NOT_FOUND
         );
     }
@@ -49,7 +52,7 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseStatus(BAD_REQUEST)
-    @ExceptionHandler(value = {ValidationException.class, AlreadyExistException.class, JsonProcessingException.class})
+    @ExceptionHandler(value = {AlreadyExistException.class, JsonProcessingException.class})
     public ResponseEntity<ExceptionResponse> handleBadRequestException(
             final RuntimeException ex, final WebRequest request) {
         return constructExceptionResponse(ex, request, BAD_REQUEST);
@@ -57,7 +60,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public final ResponseEntity<Object> methodNotAllowedExceptionException() {
-        ExceptionResponse errorResponse = new ExceptionResponse(HttpStatus.METHOD_NOT_ALLOWED.value(), ErrorCodes.METHOD_NOT_ALLOWED.message);
+        ExceptionResponse errorResponse = new ExceptionResponse(HttpStatus.METHOD_NOT_ALLOWED.value(), METHOD_NOT_ALLOWED.message);
         return new ResponseEntity<>(errorResponse, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
@@ -75,7 +78,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
     public final ResponseEntity<Object> handleBadRequestExceptions() {
-        ExceptionResponse errorResponse = new ExceptionResponse(BAD_REQUEST.value(), "Invalid request parameters");
+        ExceptionResponse errorResponse = new ExceptionResponse(BAD_REQUEST.value(), INVALID_REQUEST_PARAMETER.message);
         return new ResponseEntity<>(errorResponse, BAD_REQUEST);
     }
 

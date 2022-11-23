@@ -7,7 +7,6 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.StringJoiner;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -20,7 +19,7 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class User extends BaseAbstractDomain{
+public class User extends Auditable {
 
     @Column(unique = true, nullable = false)
     String username;

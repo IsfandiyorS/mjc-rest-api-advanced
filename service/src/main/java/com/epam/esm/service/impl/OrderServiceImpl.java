@@ -3,11 +3,12 @@ package com.epam.esm.service.impl;
 import com.epam.esm.criteria.OrderCriteria;
 import com.epam.esm.domain.GiftCertificate;
 import com.epam.esm.domain.Order;
+import com.epam.esm.domain.Tag;
 import com.epam.esm.domain.User;
 import com.epam.esm.dto.certificate.OrderCreateDto;
 import com.epam.esm.dto.certificate.OrderDto;
 import com.epam.esm.dto.certificate.OrderUpdateDto;
-import com.epam.esm.handler.ObjectNotFoundException;
+import com.epam.esm.exceptions.ObjectNotFoundException;
 import com.epam.esm.mapper.auth.OrderMapper;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.OrderRepository;
@@ -22,7 +23,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.epam.esm.constant.GiftCertificateColumn.GIFT_CERTIFICATE;
 import static com.epam.esm.constant.UserColumn.ID;
+import static com.epam.esm.constant.UserColumn.USER;
 import static com.epam.esm.enums.ErrorCodes.*;
 import static java.lang.String.format;
 
@@ -33,6 +36,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final GiftCertificateRepository giftCertificateRepository;
+    private static final String ORDER_ENTITY = "Order";
 
     @Autowired
     public OrderServiceImpl(OrderMapper orderMapper, OrderRepository orderRepository, UserRepository userRepository, GiftCertificateRepository giftCertificateRepository) {
@@ -59,12 +63,12 @@ public class OrderServiceImpl implements OrderService {
 
         Optional<User> optionalUser = userRepository.findById(createEntity.getUserId());
         if (optionalUser.isEmpty()) {
-            throw new ObjectNotFoundException(format(USER_NOT_FOUND.message, createEntity.getUserId()));
+            throw new ObjectNotFoundException(format(OBJECT_NOT_FOUND_ID.message, USER, createEntity.getUserId()));
         }
 
         Optional<GiftCertificate> optionalGiftCertificate = giftCertificateRepository.findById(createEntity.getGiftCertificateId());
         if (optionalGiftCertificate.isEmpty()) {
-            throw new ObjectNotFoundException(format(OBJECT_NOT_FOUND_ID.message, "Gift Certificate", createEntity.getGiftCertificateId()));
+            throw new ObjectNotFoundException(format(OBJECT_NOT_FOUND_ID.message, GIFT_CERTIFICATE, createEntity.getGiftCertificateId()));
         }
 
         Order order = orderMapper.fromCreateDto(createEntity);
@@ -81,8 +85,8 @@ public class OrderServiceImpl implements OrderService {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         validate(optionalOrder);
 
-        Long delete = orderRepository.delete(optionalOrder.get());
-        return Objects.equals(delete, optionalOrder.get().getId()) ? 1 : 0;
+        Long deleteState = orderRepository.delete(optionalOrder.get());
+        return deleteState == 2 ? 1 : 0;
     }
 
     @Override
@@ -104,7 +108,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDto> getOrderByUserId(PageRequest pageRequest, Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {
-            throw new ObjectNotFoundException(format(USER_NOT_FOUND.message, ID));
+            throw new ObjectNotFoundException(format(OBJECT_NOT_FOUND_ID.message, ID));
         }
 
         return orderMapper.toDtoList(orderRepository.findByUserId(pageRequest, userId));
@@ -116,7 +120,7 @@ public class OrderServiceImpl implements OrderService {
         validate(optionalOrder);
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {
-            throw new ObjectNotFoundException(format(USER_NOT_FOUND.message, "id"));
+            throw new ObjectNotFoundException(format(OBJECT_NOT_FOUND_ID.message, USER, ID));
         }
 
         Optional<Order> order = orderRepository.findOrderByIdAndUserId(orderId, userId);
@@ -133,7 +137,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void validate(Optional<Order> entity) {
         if (entity.isEmpty()) {
-            throw new ObjectNotFoundException(format(OBJECT_NOT_FOUND_ID.message, "Order"));
+            throw new ObjectNotFoundException(format(OBJECT_NOT_FOUND_ID.message, ORDER_ENTITY));
         }
     }
 

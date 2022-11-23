@@ -2,7 +2,7 @@ package com.epam.esm.repository;
 
 import com.epam.esm.creator.QueryCreator;
 import com.epam.esm.criteria.Criteria;
-import com.epam.esm.domain.BaseAbstractDomain;
+import com.epam.esm.domain.Auditable;
 import com.epam.esm.enums.State;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public abstract class AbstractCrudRepository<T extends BaseAbstractDomain, C extends Criteria> {
+@Transactional
+public abstract class AbstractCrudRepository<T extends Auditable, C extends Criteria> {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -28,7 +29,6 @@ public abstract class AbstractCrudRepository<T extends BaseAbstractDomain, C ext
         this.creator = creator;
     }
 
-    @Transactional
     public T save(T entity) {
         if (entity == null) {
             return null;
@@ -65,25 +65,18 @@ public abstract class AbstractCrudRepository<T extends BaseAbstractDomain, C ext
                 .getResultList();
     }
 
-    @Transactional
     public T update(T update) {
+        update.setState(State.UPDATED);
         return entityManager.merge(update);
     }
 
-    /**
-     * Method for removing an entity from a table by ID.
-     */
-    @Transactional
     public Long delete(T entity) {
         if (entity == null) {
             return null;
         }
         entity.setState(State.DELETED);
         entityManager.persist(entity);
-
-        // fixme read about flush
-        entityManager.flush();
-        return entity.getId();
+        return (long) entity.getState().ordinal();
     }
 
 

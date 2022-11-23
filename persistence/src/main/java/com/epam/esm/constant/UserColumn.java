@@ -9,6 +9,7 @@ public final class UserColumn {
     public final static String FIRST_NAME = "firstName";
     public final static String LAST_NAME = "lastName";
 
+    public final static String USER = "User";
     private UserColumn() {
     }
 }

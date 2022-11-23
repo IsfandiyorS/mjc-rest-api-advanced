@@ -2,8 +2,9 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.domain.User;
 import com.epam.esm.dto.auth.UserDto;
-import com.epam.esm.handler.AlreadyExistException;
-import com.epam.esm.handler.ObjectNotFoundException;
+import com.epam.esm.enums.ErrorCodes;
+import com.epam.esm.exceptions.AlreadyExistException;
+import com.epam.esm.exceptions.ObjectNotFoundException;
 import com.epam.esm.mapper.auth.UserMapper;
 import com.epam.esm.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static com.epam.esm.service.impl.model.UserModel.*;
+import static com.epam.esm.constant.UserColumn.USER;
+import static com.epam.esm.constant.UserColumn.USERNAME;
+import static com.epam.esm.service.impl.domain.UserModel.*;
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -44,6 +48,23 @@ class UserServiceImplTest {
     }
 
     @Test
+    void testGetByIdMethodThrowObjectNotFoundException() {
+        when(userRepository.findById(NOT_AVAILABLE_USER_ID))
+                .thenReturn(Optional.empty());
+
+        ObjectNotFoundException objectNotFoundException =
+                assertThrows(ObjectNotFoundException.class, () -> userService.getById(NOT_AVAILABLE_USER_ID));
+
+        String expectedException = format(ErrorCodes.OBJECT_NOT_FOUND_ID.message, USER);
+        String actualException = objectNotFoundException.getMessage();
+
+        assertEquals(expectedException, actualException);
+
+        verify(userRepository, times(1)).findById(NOT_AVAILABLE_USER_ID);
+    }
+
+
+    @Test
     void getAll() {
         when(userRepository.findAll(PAGE_REQUEST)).thenReturn(List.of(USER_ENTITY));
 
@@ -67,6 +88,21 @@ class UserServiceImplTest {
     }
 
     @Test
+    void testCreateMethodWithAvailableUsername() {
+        when(userRepository.findByUsername(USER_WITH_AVAILABLE_CREATE_DTO.getUsername())).thenReturn(Optional.of(USER_ENTITY));
+
+        AlreadyExistException alreadyExistException = assertThrows(AlreadyExistException.class,
+                () -> userService.create(USER_WITH_AVAILABLE_CREATE_DTO));
+
+        String expectedException = format(ErrorCodes.OBJECT_ALREADY_EXIST.message, USER, USERNAME);
+        String actualException = alreadyExistException.getMessage();
+
+        assertEquals(expectedException, actualException);
+
+        verify(userRepository, times(1)).findByUsername(USER_WITH_AVAILABLE_CREATE_DTO.getUsername());
+    }
+
+    @Test
     void testUpdate() {
         when(userRepository.findById(USER_ID)).thenReturn(Optional.of(USER_ENTITY));
         lenient().when(userRepository.findByUsername(USER_UPDATE_DTO.getUsername())).thenReturn(Optional.empty());
@@ -82,17 +118,6 @@ class UserServiceImplTest {
     }
 
     @Test
-    void delete() {
-        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(USER_ENTITY));
-        when(userRepository.delete(USER_ENTITY)).thenReturn(USER_ID);
-
-        int actualId = userService.delete(USER_ID);
-
-        assertEquals(1, actualId);
-        verify(userRepository, times(1)).delete(any());
-    }
-
-    @Test
     void doFilter() {
         when(userRepository.find(USER_CRITERIA, PAGE_REQUEST)).thenReturn(List.of(USER_ENTITY));
 
@@ -103,17 +128,30 @@ class UserServiceImplTest {
     }
 
     @Test
+    void delete() {
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(USER_ENTITY));
+        when(userRepository.delete(USER_ENTITY)).thenReturn(DELETED_STATE);
+
+        int actualId = userService.delete(USER_ID);
+
+        assertEquals(1, actualId);
+        verify(userRepository, times(1)).delete(any());
+    }
+
+    @Test
     void validate() {
-        ObjectNotFoundException objectNotFoundException = assertThrows(ObjectNotFoundException.class, () -> userService.validate(Optional.empty()));
-        String expectedException = "User is not found with provided id";
+        ObjectNotFoundException objectNotFoundException =
+                assertThrows(ObjectNotFoundException.class, () -> userService.validate(Optional.empty()));
+        String expectedException = format(ErrorCodes.OBJECT_NOT_FOUND.message, USER);
         String actualException = objectNotFoundException.getMessage();
         assertEquals(expectedException, actualException);
     }
 
     @Test
     void baseValidation() {
-        AlreadyExistException objectNotFoundException = assertThrows(AlreadyExistException.class, () -> userService.baseValidation(Optional.of(USER_ENTITY), "username"));
-        String expectedException = "Provided user's username already exist";
+        AlreadyExistException objectNotFoundException =
+                assertThrows(AlreadyExistException.class, () -> userService.baseValidation(Optional.of(USER_ENTITY), USERNAME));
+        String expectedException = format(ErrorCodes.OBJECT_ALREADY_EXIST.message, USER, USERNAME);
         String actualException = objectNotFoundException.getMessage();
         assertEquals(expectedException, actualException);
     }

@@ -1,7 +1,7 @@
 package com.epam.esm.creator;
 
 import com.epam.esm.criteria.Criteria;
-import com.epam.esm.domain.BaseAbstractDomain;
+import com.epam.esm.domain.Auditable;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -13,7 +13,7 @@ import javax.persistence.criteria.CriteriaQuery;
  * @author Sultonov Isfandiyor
  * @version 1.0
  */
-public interface QueryCreator<T extends BaseAbstractDomain, C extends Criteria> {
+public interface QueryCreator<T extends Auditable, C extends Criteria> {
 
     /**
      * @param criteriaBuilder the criteria builder

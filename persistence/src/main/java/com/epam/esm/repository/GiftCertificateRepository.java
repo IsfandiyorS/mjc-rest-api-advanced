@@ -18,7 +18,7 @@ public interface GiftCertificateRepository extends GenericCrudRepository<GiftCer
      * Method for getting a list of tags from a table with a specific name.
      *
      * @param name name of objects to get
-     * @return Optional object of entit from table
+     * @return Optional object of entity from table
      */
     Optional<GiftCertificate> findByName(String name);
 }

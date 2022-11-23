@@ -1,37 +1,36 @@
 package com.epam.esm.domain;
 
-import com.epam.esm.domain.audit.Auditable;
 import com.epam.esm.enums.State;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 /**
- * Abstract class {@code AbstractDomain} represents to identify objects.
+ * Abstract class {@code Auditable} represents to identify objects.
  *
  * @author Sultonov Isfandiyor
  * @version 1.0
  */
 @MappedSuperclass
 @Data
-@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = PROTECTED)
-public abstract class BaseAbstractDomain extends Auditable<String> {
+@EntityListeners(AuditingEntityListener.class)
+public abstract class Auditable implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -41,13 +40,19 @@ public abstract class BaseAbstractDomain extends Auditable<String> {
     @Column(nullable = false)
     LocalDateTime createDate = LocalDateTime.now();
 
+    @CreatedBy
+    String createdBy;
+
     @LastModifiedDate
     LocalDateTime lastUpdateDate;
+
+    @LastModifiedBy
+    String lastModifiedBy;
 
     @Column(columnDefinition = "NUMERIC default 0")
     State state = State.CREATED;
 
-    public BaseAbstractDomain(Long id) {
+    public Auditable(Long id) {
         this.id = id;
     }
 
@@ -61,4 +66,3 @@ public abstract class BaseAbstractDomain extends Auditable<String> {
                 '}';
     }
 }
-

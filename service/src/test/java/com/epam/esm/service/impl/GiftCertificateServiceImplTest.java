@@ -2,7 +2,9 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.domain.GiftCertificate;
 import com.epam.esm.dto.certificate.GiftCertificateDto;
-import com.epam.esm.handler.ObjectNotFoundException;
+import com.epam.esm.enums.ErrorCodes;
+import com.epam.esm.exceptions.AlreadyExistException;
+import com.epam.esm.exceptions.ObjectNotFoundException;
 import com.epam.esm.mapper.auth.GiftCertificateMapper;
 import com.epam.esm.mapper.auth.GiftCertificateMapperImpl;
 import com.epam.esm.mapper.auth.TagMapper;
@@ -19,7 +21,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static com.epam.esm.service.impl.model.GiftCertificateModel.*;
+import static com.epam.esm.constant.GiftCertificateColumn.GIFT_CERTIFICATE;
+import static com.epam.esm.constant.TagColumn.NAME;
+import static com.epam.esm.enums.ErrorCodes.OBJECT_ALREADY_EXIST;
+import static com.epam.esm.enums.ErrorCodes.OBJECT_NOT_FOUND_ID;
+import static com.epam.esm.service.impl.domain.GiftCertificateModel.*;
+import static com.epam.esm.service.impl.domain.TagModel.DELETED_STATE;
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
@@ -52,6 +60,22 @@ class GiftCertificateServiceImplTest {
     }
 
     @Test
+    void testGetByIdMethodThrowObjectNotFoundException() {
+        when(giftCertificateRepository.findById(NOT_AVAILABLE_GIFT_CERTIFICATE_ID))
+                .thenReturn(Optional.empty());
+
+        ObjectNotFoundException objectNotFoundException =
+                assertThrows(ObjectNotFoundException.class, () -> service.getById(NOT_AVAILABLE_GIFT_CERTIFICATE_ID));
+
+        String expectedException = format(ErrorCodes.OBJECT_NOT_FOUND_ID.message, GIFT_CERTIFICATE);
+        String actualException = objectNotFoundException.getMessage();
+
+        assertEquals(expectedException, actualException);
+
+        verify(giftCertificateRepository, times(1)).findById(NOT_AVAILABLE_GIFT_CERTIFICATE_ID);
+    }
+
+    @Test
     void getAll() {
         when(giftCertificateRepository.findAll(PAGE_REQUEST)).thenReturn(anyList());
 
@@ -62,7 +86,17 @@ class GiftCertificateServiceImplTest {
     }
 
     @Test
-    void create() {
+    void testGetAllReturnEmptyList() {
+        when(giftCertificateRepository.findAll(PAGE_REQUEST)).thenReturn(List.of());
+
+        List<GiftCertificateDto> actualList = service.getAll(PAGE_REQUEST);
+
+        assertTrue(actualList.isEmpty());
+        verify(giftCertificateRepository, times(1)).findAll(PAGE_REQUEST);
+    }
+
+    @Test
+    void testCreate() {
         when(giftCertificateRepository.findByName(NEW_GIFT_CERTIFICATE.getName())).thenReturn(Optional.empty());
         when(giftCertificateRepository.save(any(GiftCertificate.class))).thenReturn(CREATED_GIFT_CERTIFICATE);
 
@@ -70,6 +104,22 @@ class GiftCertificateServiceImplTest {
 
         assertEquals(CREATED_GIFT_CERTIFICATE_DTO, actualDto);
         verify(giftCertificateRepository, times(1)).save(any(GiftCertificate.class));
+    }
+
+    @Test
+    void testCreateMethodThrowAlreadyExistException() {
+        when(giftCertificateRepository.findByName(ALREADY_EXISTED_CERTIFICATE_DTO.getName()))
+                .thenReturn(Optional.of(ENTITY));
+
+        AlreadyExistException alreadyExistException = assertThrows(AlreadyExistException.class,
+                () -> service.create(ALREADY_EXISTED_CERTIFICATE_DTO));
+
+        String expectedException = format(OBJECT_ALREADY_EXIST.message, GIFT_CERTIFICATE, NAME);
+        String actualException = alreadyExistException.getMessage();
+
+        assertEquals(expectedException, actualException);
+
+        verify(giftCertificateRepository, times(1)).findByName(ALREADY_EXISTED_CERTIFICATE_DTO.getName());
     }
 
     @Test
@@ -85,7 +135,7 @@ class GiftCertificateServiceImplTest {
     @Test
     void delete() {
         when(giftCertificateRepository.findById(CERTIFICATE_ID)).thenReturn(Optional.of(ENTITY));
-        when(giftCertificateRepository.delete(ENTITY)).thenReturn(CERTIFICATE_ID);
+        when(giftCertificateRepository.delete(ENTITY)).thenReturn(DELETED_STATE);
 
         int actualId = service.delete(CERTIFICATE_ID);
         assertEquals(1, actualId);
@@ -104,8 +154,9 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void validate() {
-        ObjectNotFoundException objectNotFoundException = assertThrows(ObjectNotFoundException.class, () -> service.validate(Optional.empty()));
-        String expectedException = "Gift certificate is not found with provided id";
+        ObjectNotFoundException objectNotFoundException = assertThrows(
+                ObjectNotFoundException.class, () -> service.validate(Optional.empty()));
+        String expectedException = String.format(OBJECT_NOT_FOUND_ID.message, GIFT_CERTIFICATE);
         String actualException = objectNotFoundException.getMessage();
         assertEquals(expectedException, actualException);
     }

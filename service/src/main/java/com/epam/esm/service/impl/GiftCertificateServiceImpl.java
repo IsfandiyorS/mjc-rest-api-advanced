@@ -1,5 +1,6 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.constant.TagColumn;
 import com.epam.esm.criteria.GiftCertificateCriteria;
 import com.epam.esm.domain.GiftCertificate;
 import com.epam.esm.domain.Tag;
@@ -8,8 +9,8 @@ import com.epam.esm.dto.certificate.GiftCertificateDto;
 import com.epam.esm.dto.certificate.GiftCertificateUpdateDto;
 import com.epam.esm.dto.certificate.TagCreateDto;
 import com.epam.esm.enums.ErrorCodes;
-import com.epam.esm.handler.AlreadyExistException;
-import com.epam.esm.handler.ObjectNotFoundException;
+import com.epam.esm.exceptions.AlreadyExistException;
+import com.epam.esm.exceptions.ObjectNotFoundException;
 import com.epam.esm.mapper.auth.GiftCertificateMapper;
 import com.epam.esm.mapper.auth.TagMapper;
 import com.epam.esm.repository.GiftCertificateRepository;
@@ -26,6 +27,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.epam.esm.constant.GiftCertificateColumn.GIFT_CERTIFICATE;
+import static com.epam.esm.constant.GiftCertificateColumn.NAME;
+import static com.epam.esm.constant.TagColumn.TAG;
 import static com.epam.esm.utils.BaseUtils.isEmptyList;
 import static java.lang.String.format;
 
@@ -70,7 +74,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         Optional<GiftCertificate> certificateByName = giftCertificateRepository.findByName(createEntity.getName());
 
         if (certificateByName.isPresent()) {
-            throw new AlreadyExistException(format(ErrorCodes.OBJECT_ALREADY_EXIST.message));
+            throw new AlreadyExistException(format(ErrorCodes.OBJECT_ALREADY_EXIST.message, GIFT_CERTIFICATE, NAME));
         }
 
         GiftCertificate giftCertificate = giftCertificateMapper.fromCreateDto(createEntity);
@@ -106,8 +110,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public int delete(Long id) {
         Optional<GiftCertificate> optionalGiftCertificate = giftCertificateRepository.findById(id);
         validate(optionalGiftCertificate);
-        Long deleteId = giftCertificateRepository.delete(optionalGiftCertificate.get());
-        return Objects.equals(optionalGiftCertificate.get().getId(), deleteId) ? 1 : 0;
+        Long deleteState = giftCertificateRepository.delete(optionalGiftCertificate.get());
+        return deleteState == 2 ? 1 : 0;
     }
 
     @Override
@@ -130,7 +134,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                     }
                 }
                 if (isExist) {
-                    throw new AlreadyExistException(format(ErrorCodes.OBJECT_ALREADY_EXIST.message));
+                    throw new AlreadyExistException(format(ErrorCodes.OBJECT_ALREADY_EXIST.message, TAG, TagColumn.NAME));
                 }
                 addTagToList(alreadyCreatedTags, request);
             }
@@ -151,7 +155,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public void validate(Optional<GiftCertificate> entity) {
         if (entity.isEmpty()) {
-            throw new ObjectNotFoundException(format(ErrorCodes.OBJECT_NOT_FOUND_ID.message, "Gift certificate"));
+            throw new ObjectNotFoundException(format(ErrorCodes.OBJECT_NOT_FOUND_ID.message, GIFT_CERTIFICATE));
         }
     }
 }

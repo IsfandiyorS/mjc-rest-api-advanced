@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 /**
@@ -19,6 +20,7 @@ import java.util.Optional;
  * @version 1.0
  */
 @Repository
+@Transactional
 public class GiftCertificateRepositoryImpl extends AbstractCrudRepository<GiftCertificate, GiftCertificateCriteria> implements GiftCertificateRepository {
     private final EntityManager entityManager;
 
@@ -37,6 +39,4 @@ public class GiftCertificateRepositoryImpl extends AbstractCrudRepository<GiftCe
                 .getResultList().stream().findFirst();
 
     }
-
-
 }

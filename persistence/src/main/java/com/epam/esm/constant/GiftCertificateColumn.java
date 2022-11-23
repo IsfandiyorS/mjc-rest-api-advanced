@@ -14,7 +14,7 @@ public final class GiftCertificateColumn {
     public static final String PRICE = "price";
     public static final String TAG_LIST = "tagList";
     public static final String CREATE_DATE = "createDate";
-
+    public static final String GIFT_CERTIFICATE = "Gift Certificate";
     private GiftCertificateColumn() {
     }
 }

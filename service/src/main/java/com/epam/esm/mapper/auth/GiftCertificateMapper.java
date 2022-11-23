@@ -9,7 +9,8 @@ import org.mapstruct.*;
 
 import static org.mapstruct.NullValuePropertyMappingStrategy.*;
 
-@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = TagMapper.class)
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        uses = TagMapper.class)
 public interface GiftCertificateMapper extends BaseMapper<GiftCertificate, GiftCertificateCreateDto, GiftCertificateUpdateDto, GiftCertificateDto> {
 
     @Mapping(target = "tagDtoList", source = "tagList", nullValuePropertyMappingStrategy = IGNORE)

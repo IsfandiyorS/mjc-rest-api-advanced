@@ -1,7 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.criteria.Criteria;
-import com.epam.esm.domain.BaseAbstractDomain;
+import com.epam.esm.domain.Auditable;
 import com.epam.esm.dto.GenericCrudDto;
 import com.epam.esm.dto.GenericDto;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +19,7 @@ import java.util.Optional;
  * @author Sultonov Isfandiyor
  * @version 1.0
  */
-public interface GenericCrudService<T extends BaseAbstractDomain, CD, UD extends GenericCrudDto, D extends GenericDto, ID extends Serializable, C extends Criteria> {
+public interface GenericCrudService<T extends Auditable, CD, UD extends GenericCrudDto, D extends GenericDto, ID extends Serializable, C extends Criteria> {
 
     /**
      * Method for getting object by its ID

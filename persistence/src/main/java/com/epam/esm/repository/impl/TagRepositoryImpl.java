@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +21,7 @@ import java.util.Optional;
  * @version 1.0
  */
 @Repository
+@Transactional
 public class TagRepositoryImpl extends AbstractCrudRepository<Tag, TagCriteria> implements TagRepository{
     private final EntityManager entityManager;
 
